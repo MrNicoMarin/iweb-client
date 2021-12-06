@@ -1,10 +1,10 @@
-import logo from '../logo.svg';
-import React from "react";
-import { Navbar, Nav, Container } from "react-bootstrap";
+import logo from '../assets/zoomLogo.png'
+import React from 'react';
+import { Navbar, Nav, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
 function NavbarWeb () {
-    return (<Navbar fixed="top" bg="dark" variant="dark" expand="lg">
+    return (<Navbar bg="dark" variant="dark" expand="lg">
                 <Container>
                     <Navbar.Brand href="/">
                         <img 
@@ -14,7 +14,7 @@ function NavbarWeb () {
                             width="30"
                             height="30"
                         />{' '}
-                    Zoomcar
+                        Zoomcar
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="navbarScroll" />
                     <Navbar.Collapse id="navbarScroll">
