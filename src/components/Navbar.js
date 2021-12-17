@@ -22,6 +22,8 @@ function NavbarWeb () {
                             <Nav.Link href="/trayectos">Trayectos</Nav.Link>
                             <Nav.Link href="/vehiculos">Vehiculos</Nav.Link>
                             <Nav.Link href="/usuarios">Usuarios</Nav.Link>
+                            <Nav.Link href="/perfil">Perfil</Nav.Link>
+                            <Nav.Link href="/trayectos/new">Crear trayectos</Nav.Link>
                         </Nav>
                     </ Navbar.Collapse>
                 </Container>

@@ -1,35 +1,56 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {Table} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
 function Trayectos () {
-    return (<Table striped bordered hover>
+    const [trayectos, setTrayectos] = useState("[]");
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [error, setError] = useState(false);
 
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>John</td>
-                <td>Doe</td>
-                <td>john@example.com</td>
-            </tr>
-            <tr>
-                <td>Smith</td>
-                <td>Thomas</td>
-                <td>smith@example.com</td>
-            </tr>
-            <tr>
-                <td>Merry</td>
-                <td>Jim</td>
-                <td>merry@example.com</td>
-            </tr>
-        </tbody>
-    </Table>);
+    useEffect(() => { 
+        fetch("http://localhost:8000/v1/trayectos").then
+        (response => response.json()).then
+        ((data) => {
+            setTrayectos(data);
+            setIsLoaded(true);
+        }, (error) => {
+            setError(true);
+            console.log(error);
+        })
+    }, []);
+
+    if (isLoaded) {
+        return (
+            <Table hover>
+                    <thead>
+                        <tr>
+                            <th>Origen</th>
+                            <th>Destino</th>
+                            <th>Piloto</th>
+                            <th>Precio</th>
+                            <th>Fecha salida</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {trayectos.map((trayecto) => (
+                            <tr key={trayecto.id}>
+                                <td>{trayecto.origen.municipio}</td>
+                                <td>{trayecto.destino.municipio}</td>
+                                <td>{trayecto.piloto.name}, {trayecto.piloto.apellidos}</td>
+                                <td>{trayecto.precio}</td>
+                                <td>{trayecto.fechaSalida}</td>
+                                <td><a href={"/trayectos/" + trayecto.id}>Mas info</a></td>
+                            </tr>
+                        ))}
+                    </tbody>
+            </Table>);
+    } else if (error) {
+        return (<div>Error</div>);
+    } else {
+        return (<div>Loading</div>);
+    }
+
+    
 }
 
 export default Trayectos;
