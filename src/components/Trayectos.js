@@ -37,7 +37,7 @@ function Trayectos () {
                                 <td>{trayecto.origen.municipio}</td>
                                 <td>{trayecto.destino.municipio}</td>
                                 <td>{trayecto.piloto.name}, {trayecto.piloto.apellidos}</td>
-                                <td>{trayecto.precio}</td>
+                                <td>{trayecto.precio}€</td>
                                 <td>{trayecto.fechaSalida}</td>
                                 <td><a href={"/trayectos/" + trayecto.id}>Mas info</a></td>
                             </tr>

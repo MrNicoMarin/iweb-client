@@ -21,8 +21,8 @@ function NavbarWeb () {
                         <Nav className="me-auto my-2 my-lg-0" navbarScroll style={{ maxHeight: '150px' }} >
                             <Nav.Link href="/trayectos">Trayectos</Nav.Link>
                             <Nav.Link href="/vehiculos">Vehiculos</Nav.Link>
-                            <Nav.Link href="/usuarios">Usuarios</Nav.Link>
-                            <Nav.Link href="/perfil">Perfil</Nav.Link>
+                            <Nav.Link href="/perfiles">Perfiles</Nav.Link>
+                            <Nav.Link href="/perfiles/2">Mi Perfil</Nav.Link> 
                             <Nav.Link href="/trayectos/new">Crear trayectos</Nav.Link>
                         </Nav>
                     </ Navbar.Collapse>

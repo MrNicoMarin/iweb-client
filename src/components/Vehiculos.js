@@ -21,26 +21,26 @@ function Vehiculos () {
 
     if (isLoaded) {
         return (
-            <Table hover>
+            <Table className='align-middle' hover>
                     <thead>
                         <tr>
+                            <th>Imagen</th>
                             <th>Usuario</th>
                             <th>Modelo</th>
                             <th>Color</th>
                             <th>Matricula</th>
                             <th>Plazas</th>
-                            <th>Imagen</th>
                         </tr>
                     </thead>
                     <tbody>
                     {vehiculos.map((vehiculo) => (
                             <tr key={vehiculo.id}>
+                                <td>{<Image src={vehiculo.imagen} roundedCircle="true" width="100" height="100" />}</td>
                                 <td>{vehiculo.usuario.name}, {vehiculo.usuario.apellidos}</td>
                                 <td>{vehiculo.modelo}</td>
                                 <td>{vehiculo.color}</td>
                                 <td>{vehiculo.matricula}</td>
                                 <td>{vehiculo.plazas}</td>
-                                <td>{<Image src={vehiculo.imagen} roundedCircle="true" width="100" height="100" />}</td>
                                 <td><a href={"/vehiculos/" + vehiculo.id}>Mas info</a></td>
                             </tr>
                         ))}

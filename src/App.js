@@ -3,8 +3,10 @@ import NavbarWeb from './components/Navbar.js';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './webs/Home';
 import Trayectos from './components/Trayectos';
-import Perfil from './components/Perfil';
+import Perfiles from './components/Perfiles';
+import DetallesPerfil from './components/DetallesPerfil';
 import DetallesTrayecto from './components/DetallesTrayecto';
+import DetallesVehiculo from './components/DetallesVehiculo';
 import CrearTrayecto from './components/CrearTrayecto';
 import Vehiculos from './components/Vehiculos';
 
@@ -17,8 +19,10 @@ function App() {
           <Route path="trayectos" element={<Trayectos />} />
           <Route path="trayectos/:id" element={<DetallesTrayecto />} />
           <Route path="trayectos/new" element={<CrearTrayecto />} />
-          <Route path="perfil/:id" element={<Perfil />} />
+          <Route path="perfiles" element={<Perfiles />} />
+          <Route path="perfiles/:id" element={<DetallesPerfil />} />
           <Route path="vehiculos" element={<Vehiculos />} />
+          <Route path="vehiculos/:id" element={<DetallesVehiculo />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} />
       </Routes>
     </div>

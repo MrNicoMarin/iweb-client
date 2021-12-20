@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import {Table, Row, Col, Container} from 'react-bootstrap';
+import React, { useEffect, useState, useParams } from 'react';
+import {Table, Row, Col, Container } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
 import 'bootstrap/dist/css/bootstrap.css';
 import {MapContainer, TileLayer, Marker, Popup} from 'react-leaflet';
 
@@ -8,6 +9,10 @@ function CrearTrayecto () {
     const [latitud, setLatitud] = useState("");
     const [longitud, setLongitud] = useState("");
     const [location, setLocation] = useState(false);
+    const [vehiculos, setVehiculos] = useState("[]");
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [error, setError] = useState(false);
+    const [radioValue, setRadioValue] = useState('1');
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -15,9 +20,18 @@ function CrearTrayecto () {
             setLongitud(position.coords.longitude);
             setLocation(true);
         });
+        fetch("http://localhost:8000/v1/usuarios/2/vehiculos").then
+        (response => response.json()).then
+        ((data) => {
+            setVehiculos(data);
+            setIsLoaded(true);
+        }, (error) => {
+            setError(true);
+            console.log(error);
+        });
     }, []);
     
-    if (location) {
+    if (location && isLoaded) {
         return(
             <div className="CrearTrayecto">        
                 <h1>Nuevo trayecto</h1>
@@ -27,7 +41,12 @@ function CrearTrayecto () {
                             <Row><Col>Origen: </Col></Row>
                             <Row><Col>Destino: </Col></Row>
                             <Row><Col>Piloto: </Col></Row>
-                            <Row><Col>Vehiculo: </Col></Row>
+                            <Row><Col>Vehiculo: 
+                            <Form.Select aria-label="Default select example">
+                            {vehiculos.map((vehiculo) => (
+                                    <option value={vehiculo.id}>{vehiculo.matricula}</option>
+                            ))}</Form.Select>
+                            </Col></Row>
                             <Row><Col>Precio:</Col><Col><input type="text" size={5}/></Col></Row>
                             <Row><Col>Fecha salida:</Col><Col><input type="datetime-local" value={""}/></Col></Row>
                         </Col>
@@ -45,8 +64,8 @@ function CrearTrayecto () {
             
         );
     } else {
-        return <div>Obteniendo ubicacion</div>
-    }
+        return <div>Loading</div>
+    } 
 
 }
 

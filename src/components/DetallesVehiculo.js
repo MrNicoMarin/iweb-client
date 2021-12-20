@@ -4,17 +4,17 @@ import 'bootstrap/dist/css/bootstrap.css';
 import {Image, Container, Row, Col, Button, Form} from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 
-function Perfil () {
-    const [usuario, setUsuario] = useState("[]");
+function DetallesVehiculo () {
+    const [vehiculo, setVehiculos] = useState("[]");
     const [isLoaded, setIsLoaded] = useState(false);
     const [error, setError] = useState(false);
     let { id } = useParams();
 
     useEffect(() => { 
-        fetch("http://localhost:8000/v1/usuarios/" + id).then
+        fetch("http://localhost:8000/v1/vehiculos/" + id).then
         (response => response.json()).then
         ((data) => {
-            setUsuario(data);
+            setVehiculos(data);
             setIsLoaded(true);
         }, (error) => {
             setError(true);
@@ -32,21 +32,27 @@ function Perfil () {
                             <Col>
                                 <Container>
                                     <Row>
-                                        <h1>Hola, {usuario.name} </h1> 
+                                        <h1>Vehiculo de {vehiculo.usuario.name} </h1> 
                                     </Row>
                                     <Row>
-                                        <Col>Nombre:</Col> <Col> {usuario.name} </Col>
+                                        <Col>Propietario:</Col> <Col> {vehiculo.usuario.name} {vehiculo.usuario.apellidos} </Col>
                                     </Row>
                                     <Row>
-                                        <Col>Correo:</Col> <Col>{usuario.email}</Col>
+                                        <Col>Modelo:</Col> <Col>{vehiculo.modelo}</Col>
                                     </Row>
                                     <Row>
-                                            <Col>Fecha nacimiento:</Col> <Col>{usuario.fechaNacimiento}</Col>
+                                        <Col>Color:</Col> <Col>{vehiculo.color}</Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>Matricula:</Col> <Col> {vehiculo.matricula} </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>Plazas:</Col> <Col>{vehiculo.plazas}</Col>
                                     </Row>
                                 </Container>
                             </Col>
                             <Col>
-                                <Image src={usuario.imagen} roundedCircle="true" width="150" height="150" />
+                                <Image src={vehiculo.imagen} roundedCircle="true" width="150" height="150" />
                             </Col>
                         </Row>
                     </Container>
@@ -63,4 +69,4 @@ function Perfil () {
 
 }
 
-export default Perfil;
+export default DetallesVehiculo;
