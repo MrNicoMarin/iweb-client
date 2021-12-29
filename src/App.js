@@ -9,6 +9,8 @@ import DetallesTrayecto from './components/DetallesTrayecto';
 import DetallesVehiculo from './components/DetallesVehiculo';
 import CrearTrayecto from './components/CrearTrayecto';
 import Vehiculos from './components/Vehiculos';
+import AnadirVehiculo from './components/AnadirVehiculo'
+import EditarPerfil from './components/EditarPerfil'
 
 function App() {
   return (
@@ -21,8 +23,10 @@ function App() {
           <Route path="trayectos/new" element={<CrearTrayecto />} />
           <Route path="perfiles" element={<Perfiles />} />
           <Route path="perfiles/:id" element={<DetallesPerfil />} />
+          <Route path="perfiles/:id/update" element={<EditarPerfil />} />
           <Route path="vehiculos" element={<Vehiculos />} />
           <Route path="vehiculos/:id" element={<DetallesVehiculo />} />
+          <Route path="vehiculos/new" element={<AnadirVehiculo />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} />
       </Routes>
     </div>

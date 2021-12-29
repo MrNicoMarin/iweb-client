@@ -24,6 +24,8 @@ function NavbarWeb () {
                             <Nav.Link href="/perfiles">Perfiles</Nav.Link>
                             <Nav.Link href="/perfiles/2">Mi Perfil</Nav.Link> 
                             <Nav.Link href="/trayectos/new">Crear trayectos</Nav.Link>
+                            <Nav.Link href="/vehiculos/new">Crear vehiculos</Nav.Link>
+                            <Nav.Link href="/perfiles/2/update">Editar perfil</Nav.Link>
                         </Nav>
                     </ Navbar.Collapse>
                 </Container>
