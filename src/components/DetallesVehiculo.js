@@ -49,6 +49,7 @@ function DetallesVehiculo () {
                                     <Row>
                                         <Col>Plazas:</Col> <Col>{vehiculo.plazas}</Col>
                                     </Row>
+                                    <Row><Col><Button variant="primary" href={"/vehiculos/" + vehiculo.id + "/update"} >Editar</Button></Col></Row>
                                 </Container>
                             </Col>
                             <Col>

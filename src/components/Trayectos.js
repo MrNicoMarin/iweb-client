@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {Table} from 'react-bootstrap';
+import {Container, Table, Row, Col} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
+import ReactLoading from 'react-loading';
 
 function Trayectos () {
     const [trayectos, setTrayectos] = useState("[]");
@@ -47,7 +48,15 @@ function Trayectos () {
     } else if (error) {
         return (<div>Error</div>);
     } else {
-        return (<div>Loading</div>);
+        return (
+            <Container>
+                <Row>
+                    <Col></Col>
+                    <Col><ReactLoading type='spinningBubbles' color='black' height={360} width={360} /><h3>Cargando trayectos...</h3></Col>
+                    <Col></Col>
+                </Row>
+            </Container>
+            );
     }
 
     

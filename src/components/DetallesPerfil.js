@@ -53,6 +53,7 @@ function DetallesPerfil () {
                                     <Row>
                                         <Col>Fecha nacimiento:</Col> <Col>{usuario.fechaNacimiento}</Col>
                                     </Row>
+                                    <Row><Button variant="primary" href={"/perfiles/" + usuario.id + "/update"} >Editar</Button></Row>
                                     <Row>
                                         <Col>Mis vehiculos:</Col> 
                                         <Col>

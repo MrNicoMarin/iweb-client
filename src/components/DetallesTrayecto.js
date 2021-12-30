@@ -27,12 +27,14 @@ L.Marker.prototype.options.icon = DefaultIcon;
 function DetallesTrayecto () {
     function handleSubmit(e) {
         e.preventDefault();
-        alert("Te has unido");
+        alert("A desarrollar en la siguiente iteracion");
     }
 
     const [trayecto, setTrayecto] = useState("");
     const [error, setError] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [gasolineras,setGasolineras] = useState([]);
+    const [markerG, setMarkerG] = useState('');
     let {id} = useParams();
 
     useEffect(() => {
@@ -40,7 +42,13 @@ function DetallesTrayecto () {
         (response => response.json()).then
         ((data) => {
             setTrayecto(data);
-            setIsLoaded(true);},
+            setIsLoaded(true);
+            fetch("http://localhost:8000/v1/gasolineras?" + new URLSearchParams({latitud : data.origen.latitud, longitud : data.origen.longitud, distancia: 10})).then
+            (response => response.json()).then
+            ((dataG) => {
+                setGasolineras(dataG);},
+            (error) => {setError(true);});},
+            
         (error) => {setError(true);});
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -69,6 +77,7 @@ function DetallesTrayecto () {
                                 <ListGroup>
                                     <ListGroup.Item>Modelo: {trayecto.vehiculo.modelo}</ListGroup.Item>
                                     <ListGroup.Item>Plazas: {trayecto.vehiculo.plazas}</ListGroup.Item>
+                                    <ListGroup.Item>Precio: {trayecto.precio}€</ListGroup.Item>
                                 </ListGroup>
                                 </Col>
                                 <Col>
@@ -104,6 +113,13 @@ function DetallesTrayecto () {
                                 </Popup>
                             </Marker>
                         ))}
+                        {markerG != '' && (
+                            <Marker position={[markerG.lat, markerG.lon]}>
+                                <Popup>
+                                    Gasolinera<br/>{markerG.direccion}
+                                </Popup>
+                            </Marker>
+                        )}
                     </MapContainer>
 
                     <ListGroup horizontal>
@@ -113,6 +129,42 @@ function DetallesTrayecto () {
                     </ListGroup>
                 </Col>
             </Row>
+            <Row>
+                <Col>
+                {gasolineras.length == 0 && (<div>Loading...</div>)}
+                {gasolineras.length > 0 && (
+                    <><h1>Gasolineras cercanas</h1>
+                                <Table hover style={{'overflow-y' : 'scroll','height':'500px','display':'block'}}>
+                                    <thead>
+                                        <tr>
+                                            <th>Dirección</th>
+                                            <th>Horario</th>
+                                            <th>Precio Gasoil</th>
+                                            <th>Precio Gasoil+</th>
+                                            <th>Precio 95</th>
+                                            <th>Precio 98</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {gasolineras.map(gasolinera => (
+                                            <tr>
+                                                <td>{gasolinera.Direccion}</td>
+                                                <td>{gasolinera.Horario}</td>
+                                                <td>{gasolinera.PrecioGA}</td>
+                                                <td>{gasolinera.PrecioGPremium}</td>
+                                                <td>{gasolinera.Precio95}</td>
+                                                <td>{gasolinera.Precio98}</td>
+                                                <td><Button onClick={function () { setMarkerG({ lat: gasolinera.Latitud.replace(',', '.'), lon: gasolinera.Longitud.replace(',', '.'), direccion: gasolinera.Direccion }); } }>Mostrar en mapa</Button></td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table></>
+                )}
+                </Col>
+                <Col></Col>
+            </Row>
+            
             </Container>
         );
     } else if (error) {

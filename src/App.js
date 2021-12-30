@@ -11,6 +11,7 @@ import CrearTrayecto from './components/CrearTrayecto';
 import Vehiculos from './components/Vehiculos';
 import AnadirVehiculo from './components/AnadirVehiculo'
 import EditarPerfil from './components/EditarPerfil'
+import EditarVehiculo from './components/EditarVehiculo'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="vehiculos" element={<Vehiculos />} />
           <Route path="vehiculos/:id" element={<DetallesVehiculo />} />
           <Route path="vehiculos/new" element={<AnadirVehiculo />} />
+          <Route path="vehiculos/:id/update" element={<EditarVehiculo />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} />
       </Routes>
     </div>

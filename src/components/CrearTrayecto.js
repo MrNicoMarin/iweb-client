@@ -16,6 +16,17 @@ function CrearTrayecto () {
     const [paradas, setParadas] = useState([]);
     const [destino, setDestino] = useState('');
     const [seleccion, setSeleccion] = useState('0');
+    const [trayecto, setTrayecto] = useState({
+        origen : '',
+        paradas : [],
+        destino : '',
+        piloto : {
+            id : 2
+        },
+        vehiculo : {},
+        precio : 0,
+        fechaSalida : ''
+    });
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -50,6 +61,43 @@ function CrearTrayecto () {
         return null;
     }
 
+    function handleVehiculo (e) {
+        trayecto.vehiculo.id = e.target.value;
+        setTrayecto(trayecto);
+    }
+
+    function handleFecha (e) {
+        trayecto.fechaSalida = e.target.value;
+        setTrayecto(trayecto);
+    }
+
+    function handlePrecio (e) {
+        trayecto.precio = parseFloat(e.target.value);
+        setTrayecto(trayecto);
+    }
+
+    function handleBoton (e) {
+        trayecto.origen = {latitud : origen.lat, longitud : origen.long};
+        setTrayecto(trayecto);
+        trayecto.paradas = [];
+        paradas.forEach(function(parada, index) {
+            console.log(parada);
+            var paradasNew = trayecto.paradas.concat([{latitud : parada.lat, longitud : parada.long}])
+            trayecto.paradas = paradasNew;
+            setTrayecto(trayecto);
+        })
+        trayecto.destino = {latitud : destino.lat, longitud : destino.long};
+        setTrayecto(trayecto);
+        var requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(trayecto)
+        };
+        fetch('http://localhost:8000/v1/trayectos', requestOptions);
+
+        window.location.replace('/trayectos');
+    }
+
     if (location && isLoaded) {
         return(
             <div className="CrearTrayecto">        
@@ -58,13 +106,15 @@ function CrearTrayecto () {
                     <Row>
                         <Col>
                             <Row><Col>Vehiculo: 
-                            <Form.Select aria-label="Default select example">
+                            <Form.Select aria-label="Default select example" onChange={handleVehiculo}>
+                                <option value="-1">Seleccione un vehiculo</option>
                             {vehiculos.map((vehiculo) => (
                                     <option value={vehiculo.id}>{vehiculo.matricula}</option>
                             ))}</Form.Select>
                             </Col></Row>
-                            <Row><Col>Precio:</Col><Col><input type="text" size={5}/></Col></Row>
-                            <Row><Col>Fecha salida:</Col><Col><input type="datetime-local" /></Col></Row>
+                            <Row><Col>Precio:</Col><Col><input type="text" size={5} onChange={handlePrecio}/></Col></Row>
+                            <Row><Col>Fecha salida:</Col><Col><input type="datetime-local" onChange={handleFecha}/></Col></Row>
+                            <Row><Col><Button onClick={handleBoton}>Publicar trayecto</Button></Col></Row>
                         </Col>
                         <Col>                    
                         <MapContainer center={[latitud,longitud]} zoom={10} scrollWheelZooms style={{height: '350px'}}>
