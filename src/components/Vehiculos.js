@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import {Table, Image} from 'react-bootstrap';
+import {Image} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
+import {Table, Row, Col, Container, Button} from 'react-bootstrap';
+import ReactLoading from 'react-loading';
 
 function Vehiculos () {
     const [vehiculos, setVehiculos] = useState("[]");
@@ -49,7 +51,19 @@ function Vehiculos () {
     } else if (error) {
         return (<div>Error</div>);
     } else {
-        return (<div>Loading</div>);
+        return (
+            <Container>
+            <Row>
+                <Col></Col>
+                <Col><ReactLoading type='bars' color='black' height={400} width={400} /></Col>
+                <Col></Col>
+            </Row>
+            <Row>
+                <Col></Col>
+                <Col><h4>Cargando vehiculos...</h4></Col>
+                <Col></Col>
+            </Row>
+        </Container>);
     }
 
     

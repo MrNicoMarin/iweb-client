@@ -11,9 +11,12 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import termRojo from '../assets/termometro_rojo.png';
+import termAzul from '../assets/termometro_azul.png';
 
 let DefaultIcon = L.icon({
     iconUrl: icon,
@@ -22,7 +25,7 @@ let DefaultIcon = L.icon({
     iconAnchor: [17, 46]
 });
 
-L.Marker.prototype.options.icon = DefaultIcon;
+L.Marker.prototype.options.icon = DefaultIcon; 
 
 function DetallesTrayecto () {
     function handleSubmit(e) {
@@ -35,7 +38,12 @@ function DetallesTrayecto () {
     const [isLoaded, setIsLoaded] = useState(false);
     const [gasolineras,setGasolineras] = useState([]);
     const [markerG, setMarkerG] = useState('');
+    const [prediccion, setPrediccion] = useState('');
     let {id} = useParams();
+
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     useEffect(() => {
         fetch("http://localhost:8000/v1/trayectos/" + id).then
@@ -43,6 +51,14 @@ function DetallesTrayecto () {
         ((data) => {
             setTrayecto(data);
             setIsLoaded(true);
+            const date = new Date(data.fechaSalida);
+            const stringDate = date.getFullYear() + '-' + ((date.getMonth() + 1).toString().length == 1 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-' + (date.getDate().toString().length == 1 ? '0' + date.getDate() : date.getDate());
+            fetch("http://localhost:8000/v1/predicciones?" + new URLSearchParams({municipio : data.origen.municipio, fecha : stringDate, hora : date.getHours()})).then
+            (response => response.json()).then
+            ((dataP) => {
+                console.log(dataP)
+                setPrediccion(dataP);},
+            (error) => {setError(true);})
             fetch("http://localhost:8000/v1/gasolineras?" + new URLSearchParams({latitud : data.origen.latitud, longitud : data.origen.longitud, distancia: 10})).then
             (response => response.json()).then
             ((dataG) => {
@@ -53,8 +69,38 @@ function DetallesTrayecto () {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    function handleDelete(event){
+        var requestOptions = {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(trayecto)
+        };
+        fetch('http://localhost:8000/v1/trayectos/'+id, requestOptions).then
+        (response => {window.location.replace("/trayectos")})
+    }
+
     if (isLoaded) {
         return (
+            <div>
+            <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
+              <Modal.Header closeButton>
+                <Modal.Title>Borrar trayecto</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                ¿Está seguro que desea borrar este trayecto? 
+                Pulse "confirmar eliminación" para borrarlo definitivamente.
+                Pulse "cancelar" para evitar la acción.
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                    Cancelar
+                </Button>
+                <Button variant="primary" onClick={handleDelete}>
+                    Confirmar eliminación
+                </Button>
+              </Modal.Footer>
+            </Modal>
+
             <Container>
             <Row>
                 <Col>
@@ -130,11 +176,17 @@ function DetallesTrayecto () {
                 </Col>
             </Row>
             <Row>
+                <Col></Col>
+                <Col></Col>
+                <Col>
+                    <Button onClick={handleShow} variant="danger">Borrar trayecto</Button>
+                </Col></Row>
+            <Row>
                 <Col>
                 {gasolineras.length == 0 && (<div>Loading...</div>)}
                 {gasolineras.length > 0 && (
                     <><h1>Gasolineras cercanas</h1>
-                                <Table hover style={{'overflow-y' : 'scroll','height':'500px','display':'block'}}>
+                                <Table hover style={{'overflowY' : 'scroll','height':'500px','display':'block'}}>
                                     <thead>
                                         <tr>
                                             <th>Dirección</th>
@@ -162,10 +214,42 @@ function DetallesTrayecto () {
                                 </Table></>
                 )}
                 </Col>
-                <Col></Col>
+                <Col>
+                {prediccion == '' && (<div>Loading...</div>)}
+                {prediccion != '' && prediccion.hasOwnProperty('mensaje') && (<h1>No existe prediccion para ese dia</h1>)}
+                {prediccion != '' && !prediccion.hasOwnProperty('mensaje') && (
+                <><h1>Predicción en {trayecto.origen.municipio}</h1>
+                <Table hover>
+                    <tbody>
+                        <tr>
+                            <th>Estado del cielo</th>
+                            <td>{prediccion.estadoCielo} <Image roundedCircle height={'40em'} src={require('../assets/tiempoMeteorologico/' + prediccion.estadoCielo + '.png').default} /></td>
+                        </tr>
+                        <tr>
+                            <th>Probabilidad de lluvia</th>
+                            <td>{prediccion.probPrecipitacion}%</td>
+                        </tr>
+                        <tr>
+                            <th>Temperatura máxima</th>
+                            <td>{prediccion.temperaturaMax}°C <Image height={'40em'} src={termRojo} /></td>
+                        </tr>
+                        <tr>
+                            <th>Temperatura mínima</th>
+                            <td>{prediccion.temperaturaMin}°C <Image height={'30em'} src={termAzul} /></td>
+                        </tr>
+                        <tr>
+                            <th>Viento</th>
+                            <td>{prediccion.viento.velocidad} km/h {prediccion.viento.direccion != 'C' && ('Dirección: ' + prediccion.viento.direccion)} </td>
+                        </tr>
+                    </tbody>
+
+                </Table></>
+                )}
+                </Col>
             </Row>
             
             </Container>
+            </div>
         );
     } else if (error) {
         return (<div>Error</div>)

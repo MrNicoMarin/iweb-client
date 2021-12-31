@@ -5,6 +5,8 @@ import Image from 'react-bootstrap/Image'
 import Form from 'react-bootstrap/Form';
 import 'bootstrap/dist/css/bootstrap.css';
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
+import Modal from 'react-bootstrap/Modal'
+import ReactLoading from 'react-loading';
 const KEY = '519cb5cfb8146d5c913f65c72c2abee5';
 
 function EditarVehiculo () {
@@ -13,6 +15,9 @@ function EditarVehiculo () {
     const [isLoaded, setIsLoaded] = useState(false);
     const [imagenCambiada, setImagenCambiada] = useState(false);
     const [error, setError] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const handleCloseModal = () => setShowModal(false);
+    const handleShowModal = () => setShowModal(true);
     const [vehiculo, setVehiculo] = useState({
         modelo : '',
         color : '',
@@ -88,6 +93,14 @@ function EditarVehiculo () {
         }
     }
 
+    function handleDeleteVehiculo(event){
+        var requestOptions = {
+            method: 'DELETE'
+        };
+        fetch('http://localhost:8000/v1/vehiculos/'+ id, requestOptions).then
+        (response => {window.location.replace("/vehiculos")});
+    }
+
     useEffect(() => { 
         fetch("http://localhost:8000/v1/vehiculos/"+ id).then
         (response => response.json()).then
@@ -95,7 +108,6 @@ function EditarVehiculo () {
             setVehiculo(data);
             setFileUrl(data.imagen)
             setIsLoaded(true);
-            console.log(data)
         }, (error) => {
             setError(true);
             console.log(error);
@@ -104,6 +116,18 @@ function EditarVehiculo () {
     
     if (isLoaded) {
         return( 
+            <div>
+            <Modal show={showModal} onHide={handleCloseModal} backdrop="static" >
+                <Modal.Header closeButton>
+                    <Modal.Title>Eliminar el coche</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>¿Estas seguro de eliminar el coche? Esto será de manera permanente</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModal}>Atras</Button>
+                    <Button variant="primary" onClick={handleDeleteVehiculo}>Aceptar</Button>
+                </Modal.Footer>
+            </Modal>
+
             <Form>
                 <Container>
                     <br/><br/><br/><br/><br/><br/>
@@ -147,8 +171,10 @@ function EditarVehiculo () {
                         </Col>
                     </Row>
                 </Container>
-                <Button onClick={handleBoton} variant="primary">Guardar vehiculo</Button>
+                <Button onClick={handleBoton} variant="primary">Guardar vehiculo</Button><br/>
+                <Button onClick={handleShowModal} variant="danger">Borrar vehiculo</Button>
             </Form>
+            </div>
         );
     } else {
         return <div>Loading</div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {Table, Image} from 'react-bootstrap';
+import {Row, Col, Container, Button, Table, Image} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
+import ReactLoading from 'react-loading';
 
 function Perfiles () {
     const [usuarios, setUsuarios] = useState("[]");
@@ -47,7 +48,18 @@ function Perfiles () {
     } else if (error) {
         return (<div>Error</div>);
     } else {
-        return (<div>Loading</div>);
+        return (<Container>
+            <Row>
+                <Col></Col>
+                <Col><ReactLoading type='bars' color='black' height={400} width={400} /></Col>
+                <Col></Col>
+            </Row>
+            <Row>
+                <Col></Col>
+                <Col><h4>Cargando perfiles...</h4></Col>
+                <Col></Col>
+            </Row>
+        </Container>);
     }
 
     
