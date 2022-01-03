@@ -3,6 +3,7 @@ import {Table} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import {Image, Container, Row, Col, Button, Form} from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
+import ReactLoading from 'react-loading';
 
 function DetallesVehiculo () {
     const [vehiculo, setVehiculos] = useState("[]");
@@ -34,26 +35,33 @@ function DetallesVehiculo () {
                                     <Row>
                                         <h1>Vehiculo de {vehiculo.usuario.name} </h1> 
                                     </Row>
+                                    <br/><br/>
                                     <Row>
-                                        <Col>Propietario:</Col> <Col> {vehiculo.usuario.name} {vehiculo.usuario.apellidos} </Col>
+                                        <Col><b>Propietario:</b></Col> <Col> {vehiculo.usuario.name} {vehiculo.usuario.apellidos} </Col>
                                     </Row>
+                                    <br/>
                                     <Row>
-                                        <Col>Modelo:</Col> <Col>{vehiculo.modelo}</Col>
+                                        <Col><b>Modelo:</b></Col> <Col>{vehiculo.modelo}</Col>
                                     </Row>
+                                    <br/>
                                     <Row>
-                                        <Col>Color:</Col> <Col>{vehiculo.color}</Col>
+                                        <Col><b>Color:</b></Col> <Col>{vehiculo.color}</Col>
                                     </Row>
+                                    <br/>
                                     <Row>
-                                        <Col>Matricula:</Col> <Col> {vehiculo.matricula} </Col>
+                                        <Col><b>Matricula:</b></Col> <Col> {vehiculo.matricula} </Col>
                                     </Row>
+                                    <br/>
                                     <Row>
-                                        <Col>Plazas:</Col> <Col>{vehiculo.plazas}</Col>
+                                        <Col><b>Plazas:</b></Col> <Col>{vehiculo.plazas}</Col>
                                     </Row>
+                                    <br/>
                                     <Row><Col><Button variant="primary" href={"/vehiculos/" + vehiculo.id + "/update"} >Editar</Button></Col></Row>
                                 </Container>
                             </Col>
                             <Col>
-                                <Image src={vehiculo.imagen} roundedCircle="true" width="150" height="150" />
+                                <br/><br/><br/><br/>
+                                <Image src={vehiculo.imagen} roundedCircle="true" width="250" height="250" />
                             </Col>
                         </Row>
                     </Container>
@@ -65,7 +73,18 @@ function DetallesVehiculo () {
     } else if (error) {
         return (<div>Error</div>);
     } else {
-        return (<div>Loading</div>);
+        return (<Container>
+            <Row>
+                <Col></Col>
+                <Col><ReactLoading type='bars' color='black' height={400} width={400} /></Col>
+                <Col></Col>
+            </Row>
+            <Row>
+                <Col></Col>
+                <Col><h4>Cargando vehiculo...</h4></Col>
+                <Col></Col>
+            </Row>
+        </Container>);
     }
 
 }

@@ -130,54 +130,76 @@ function EditarVehiculo () {
 
             <Form>
                 <Container>
-                    <br/><br/><br/><br/><br/><br/>
+                    <br/>
                     <Row>
-                        <Col sm={8}>Propietario: {vehiculo.usuario.name}</Col>
-                        <Col sm={4}><Image src={fileUrl} width="150" height="150" hidden={fileUrl==null} /><br/><Form.Control type="file" accept="image/*" onChange={processImage} /></Col>
+                        <Col sm={8}><h1>Propietario: {vehiculo.usuario.name} </h1> 
+                        
+                        <br/>
+                        <Row>
+                            <Col sm>
+                            <FloatingLabel
+                            controlId="floatingInput"
+                            label="Modelo*"
+                            className="mb-3"
+                        >
+                            <Form.Control defaultValue={vehiculo.modelo} onChange={handleModelo}/>
+                        </FloatingLabel></Col>
+                            <Col sm>
+                            <FloatingLabel
+                            controlId="floatingInput"
+                            label="Color*"
+                            className="mb-3"
+                        >
+                            <Form.Control defaultValue={vehiculo.color} onChange={handleColor} />
+                            </FloatingLabel>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col sm><FloatingLabel
+                            controlId="floatingInput"
+                            label="Matrícula*"
+                            className="mb-3"
+                        >
+                            <Form.Control defaultValue={vehiculo.matricula} onChange={handleMatricula} />
+                        </FloatingLabel></Col>
+                            <Col sm>
+                            <FloatingLabel
+                            controlId="floatingInput"
+                            label="Plazas*"
+                            className="mb-3"
+                        >
+                            <Form.Control defaultValue={vehiculo.plazas} onChange={handlePlazas} />
+                        </FloatingLabel>
+                            </Col>
+                        </Row>
+                        </Col>
+                    <Col sm={4}><Image src={fileUrl} width="150" height="150" hidden={fileUrl==null} /><br/><Form.Control type="file" accept="image/*" onChange={processImage} /></Col>
                     </Row>
                     <Row>
-                        <Col sm>
-                        <FloatingLabel
-                        controlId="floatingInput"
-                        label="Modelo"
-                        className="mb-3"
-                    >
-                        <Form.Control defaultValue={vehiculo.modelo} onChange={handleModelo}/>
-                    </FloatingLabel></Col>
-                        <Col sm>
-                        <FloatingLabel
-                        controlId="floatingInput"
-                        label="Color"
-                        className="mb-3"
-                    >
-                        <Form.Control defaultValue={vehiculo.color} onChange={handleColor} />
-                    </FloatingLabel>
-                    </Col>
-                        <Col sm><FloatingLabel
-                        controlId="floatingInput"
-                        label="Matrícula"
-                        className="mb-3"
-                    >
-                        <Form.Control defaultValue={vehiculo.matricula} onChange={handleMatricula} />
-                    </FloatingLabel></Col>
-                        <Col sm>
-                        <FloatingLabel
-                        controlId="floatingInput"
-                        label="Plazas"
-                        className="mb-3"
-                    >
-                        <Form.Control defaultValue={vehiculo.plazas} onChange={handlePlazas} />
-                    </FloatingLabel>
-                        </Col>
+                    <Col sm={8}> 
+                <Button onClick={handleBoton} variant="primary">Guardar vehiculo</Button>
+                </Col>
+                <Col sm={4}>
+                <Button onClick={handleShowModal} variant="danger">Borrar vehiculo</Button>
+                </Col>
                     </Row>
                 </Container>
-                <Button onClick={handleBoton} variant="primary">Guardar vehiculo</Button><br/>
-                <Button onClick={handleShowModal} variant="danger">Borrar vehiculo</Button>
             </Form>
             </div>
         );
     } else {
-        return <div>Loading</div>
+        return (<Container>
+            <Row>
+                <Col></Col>
+                <Col><ReactLoading type='bars' color='black' height={400} width={400} /></Col>
+                <Col></Col>
+            </Row>
+            <Row>
+                <Col></Col>
+                <Col><h4>Cargando vehiculo...</h4></Col>
+                <Col></Col>
+            </Row>
+        </Container>);
     } 
 
 }

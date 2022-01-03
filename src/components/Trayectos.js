@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ReactLoading from 'react-loading';
 import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Spinner from 'react-bootstrap/Spinner'
 
 const INITIAL_OFFSET = 0;
 
@@ -13,6 +14,7 @@ function Trayectos () {
     const [isLoaded, setIsLoaded] = useState(false);
     const [valueMin, setValueMin ] = useState(1);
     const [valueMax, setValueMax ] = useState(100);
+    const [isFiltring, setIsFiltring ] = useState(false);
     const [error, setError] = useState(false);
     const [params, setParams] = useState({limit : 10, offset: INITIAL_OFFSET});
     const [isLoadingMas, setIsLoadingMas] = useState(false);
@@ -32,8 +34,8 @@ function Trayectos () {
 
     function formatoFecha(f) {
         var fecha = new Date(f);
-        var date = fecha.getDate()+'/'+(fecha.getMonth()+1)+'/'+fecha.getFullYear();
-        var time = fecha.getHours() + ":" + fecha.getMinutes();
+        var date = (fecha.getDate() < 10 ? '0' + fecha.getDate() : fecha.getDate()) +'/'+((fecha.getMonth()+1) < 10 ? ('0' + (fecha.getMonth()+1)) : ((fecha.getMonth()+1))) +'/'+fecha.getFullYear();
+        var time = fecha.getHours() + ":" + (fecha.getMinutes() < 10? "0" + fecha.getMinutes() : fecha.getMinutes());
         return(date+' '+time);
     }
 
@@ -111,6 +113,7 @@ function Trayectos () {
     }
 
     function handleFiltrar(event){
+        setIsFiltring(true);
         params.offset = INITIAL_OFFSET;
         setParams(params);
         fetch("http://localhost:8000/v1/trayectos?" + new URLSearchParams(params)).then
@@ -118,6 +121,7 @@ function Trayectos () {
         ((data) => {
             setTrayectos(data);
             setMasResultados(true);
+            setIsFiltring(false);
         }, (error) => {
             setError(true);
             console.log(error);
@@ -127,8 +131,11 @@ function Trayectos () {
     if (isLoaded) {
         return (
             <>
-            <Form>
-                <h3>Filtrar</h3>
+            <h1>Trayectos</h1>
+            <Container>
+                <Col></Col>
+                <Col><Form>
+                <h3>Filtros</h3>
                 <Form.Group as={Row}>
                 <Col xs="2"><Form.Label >Precio Mínimo</Form.Label></Col>
                 <Col xs="8"><Form.Range
@@ -151,7 +158,7 @@ function Trayectos () {
                     <Col xs="2">Fecha de salida minima</Col>
                     <Col xs="2"><input type="datetime-local" onChange={handleFechaSalidaMin}/></Col>
                     <Col xs="3">Fecha de salida maxima</Col>
-                    <Col xs="3"><input type="datetime-local" onChange={handleFechaSalidaMax}/></Col>
+                    <Col xs="2"><input type="datetime-local" onChange={handleFechaSalidaMax}/></Col>
                 </Form.Group>
                 <Form.Group as={Row}>
                     <Col xs="2">Municipio de origen</Col>
@@ -160,7 +167,7 @@ function Trayectos () {
                     <Col xs="2"><Form.Control type="text" onChange={handleDestino}/></Col>
                 </Form.Group>
                 <Form.Group as={Row}>
-                    <Col xs="15"><Button variant="primary" onClick={handleFiltrar}>Filtrar</Button></Col>
+                    <Col xs="12"><Button variant="primary" onClick={handleFiltrar}><Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true" hidden={!isFiltring} />{!isFiltring?"Filtrar":"Loading..."}</Button></Col>
                 </Form.Group>
             </Form>
                 
@@ -190,7 +197,7 @@ function Trayectos () {
             {masResultados && (
                 <Container>
                     <Row>
-                        <Button variant='secondary' disabled={isLoadingMas} onClick={handleMas}>Mostrar más</Button>
+                        <Button variant='secondary' disabled={isLoadingMas} onClick={handleMas}><Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true" hidden={!isLoadingMas} />Mostrar más</Button>
                     </Row>
                 </Container>
             )}
@@ -200,7 +207,10 @@ function Trayectos () {
                         <Button variant='secondary' disabled >No hay mas resultados</Button>
                     </Row>
                 </Container>
-            )}
+            )}</Col>
+                <Col></Col>
+            </Container>
+            
 
             </>);
     } else if (error) {

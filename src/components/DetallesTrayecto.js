@@ -17,6 +17,7 @@ import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import termRojo from '../assets/termometro_rojo.png';
 import termAzul from '../assets/termometro_azul.png';
+import ReactLoading from 'react-loading';
 
 let DefaultIcon = L.icon({
     iconUrl: icon,
@@ -69,6 +70,13 @@ function DetallesTrayecto () {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    function formatoFecha(f) {
+        var fecha = new Date(f);
+        var date = (fecha.getDate() < 10 ? '0' + fecha.getDate() : fecha.getDate()) +'/'+((fecha.getMonth()+1) < 10 ? ('0' + (fecha.getMonth()+1)) : ((fecha.getMonth()+1))) +'/'+fecha.getFullYear();
+        var time = fecha.getHours() + ":" + (fecha.getMinutes() < 10? "0" + fecha.getMinutes() : fecha.getMinutes());
+        return(date+' '+time);
+    }
+
     function handleDelete(event){
         var requestOptions = {
             method: 'DELETE',
@@ -82,6 +90,10 @@ function DetallesTrayecto () {
     if (isLoaded) {
         return (
             <div>
+                <br/>
+            <h1>Trayecto desde {trayecto.origen.municipio} a {trayecto.destino.municipio}</h1>
+            <br/>
+            <br/>
             <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
               <Modal.Header closeButton>
                 <Modal.Title>Borrar trayecto</Modal.Title>
@@ -109,7 +121,7 @@ function DetallesTrayecto () {
                             <Row>
                                 <Col>
                                 <ListGroup>
-                                    <ListGroup.Item>Piloto: {trayecto.piloto.name + trayecto.piloto.apellidos} </ListGroup.Item>
+                                    <ListGroup.Item>Piloto: {trayecto.piloto.name + ' ' + trayecto.piloto.apellidos} </ListGroup.Item>
                                     <ListGroup.Item>Correo: {trayecto.piloto.email} </ListGroup.Item>
                                 </ListGroup>
                                 </Col>
@@ -117,7 +129,7 @@ function DetallesTrayecto () {
                                 <Image src = {trayecto.piloto.imagen} thumbnail width='50%'></Image>
                                 </Col>
                             </Row>
-                            
+                            <br/>
                             <Row>
                                 <Col>
                                 <ListGroup>
@@ -169,9 +181,10 @@ function DetallesTrayecto () {
                     </MapContainer>
 
                     <ListGroup horizontal>
-                        <ListGroup.Item>Fecha: {trayecto.fechaSalida} </ListGroup.Item>
+                        <ListGroup.Item>Fecha: {formatoFecha(trayecto.fechaSalida)} </ListGroup.Item>
                         <ListGroup.Item>Precio: {trayecto.precio} €</ListGroup.Item>
                         <ListGroup.Item><Button onClick={handleSubmit} variant="success">Unirme!</Button>{' '}</ListGroup.Item>
+                        <ListGroup.Item><Button onClick={handleShow} variant="danger">Borrar</Button>{' '}</ListGroup.Item>
                     </ListGroup>
                 </Col>
             </Row>
@@ -179,11 +192,23 @@ function DetallesTrayecto () {
                 <Col></Col>
                 <Col></Col>
                 <Col>
-                    <Button onClick={handleShow} variant="danger">Borrar trayecto</Button>
+                    
                 </Col></Row>
+                <br/><br />
             <Row>
                 <Col>
-                {gasolineras.length == 0 && (<div>Loading...</div>)}
+                {gasolineras.length == 0 && (<Container>
+                <Row>
+                    <Col></Col>
+                    <Col><ReactLoading type='spin' color='black' height={200} width={200} /></Col>
+                    <Col></Col>
+                </Row>
+                <Row>
+                    <Col></Col>
+                    <Col><h4>Cargando gasolineras...</h4></Col>
+                    <Col></Col>
+                </Row>
+            </Container>)}
                 {gasolineras.length > 0 && (
                     <><h1>Gasolineras cercanas</h1>
                                 <Table hover style={{'overflowY' : 'scroll','height':'500px','display':'block'}}>
@@ -215,7 +240,18 @@ function DetallesTrayecto () {
                 )}
                 </Col>
                 <Col>
-                {prediccion == '' && (<div>Loading...</div>)}
+                {prediccion == '' && (<Container>
+                <Row>
+                    <Col></Col>
+                    <Col><ReactLoading type='spin' color='black' height={200} width={200} /></Col>
+                    <Col></Col>
+                </Row>
+                <Row>
+                    <Col></Col>
+                    <Col><h4>Cargando prediccion...</h4></Col>
+                    <Col></Col>
+                </Row>
+            </Container>)}
                 {prediccion != '' && prediccion.hasOwnProperty('mensaje') && (<h1>No existe prediccion para ese dia</h1>)}
                 {prediccion != '' && !prediccion.hasOwnProperty('mensaje') && (
                 <><h1>Predicción en {trayecto.origen.municipio}</h1>
@@ -254,7 +290,18 @@ function DetallesTrayecto () {
     } else if (error) {
         return (<div>Error</div>)
     } else {
-        return (<div>Loading</div>);
+        return (<Container>
+            <Row>
+                <Col></Col>
+                <Col><ReactLoading type='bars' color='black' height={400} width={400} /></Col>
+                <Col></Col>
+            </Row>
+            <Row>
+                <Col></Col>
+                <Col><h4>Cargando trayecto...</h4></Col>
+                <Col></Col>
+            </Row>
+        </Container>);
     }
 }
 

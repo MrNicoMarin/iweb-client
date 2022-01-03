@@ -22,6 +22,9 @@ function Perfiles () {
 
     if (isLoaded) {
         return (
+            <>
+            <h1>Perfiles</h1>
+            <Container>
             <Table className='align-middle' hover>
                     <thead>
                         <tr>
@@ -44,7 +47,9 @@ function Perfiles () {
                             </tr>
                         ))}
                     </tbody>
-            </Table>);
+            </Table>
+            </Container>
+            </>);
     } else if (error) {
         return (<div>Error</div>);
     } else {

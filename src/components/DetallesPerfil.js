@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {Table} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
-import {Image, Container, Row, Col, Button, Form} from 'react-bootstrap';
+import {Image, Container, Row, Col, Button, Form, Dropdown} from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
+import ReactLoading from 'react-loading';
+import Badge from 'react-bootstrap/Badge'
 
 function DetallesPerfil () {
     const [usuario, setUsuario] = useState("[]");
@@ -34,57 +36,78 @@ function DetallesPerfil () {
     }, []);
 
     if (isLoaded) {
-        return (
+        return( 
             <Container>
                 <Row>
-                    <Container>
-                        <Row>
-                            <Col>
-                                <Container>
-                                    <Row>
-                                        <h1>Hola, {usuario.name} </h1> 
-                                    </Row>
-                                    <Row>
-                                        <Col>Nombre:</Col> <Col> {usuario.name} </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>Correo:</Col> <Col>{usuario.email}</Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>Fecha nacimiento:</Col> <Col>{usuario.fechaNacimiento}</Col>
-                                    </Row>
-                                    <Row><Button variant="primary" href={"/perfiles/" + usuario.id + "/update"} >Editar</Button></Row>
-                                    <Row>
-                                        <Col>Mis vehiculos:</Col> 
-                                        <Col>
-                                        <Container>
-                                            {vehiculos.map((vehiculo) => (
-                                                <Row>
-                                                    <div key={vehiculo.id}>
-                                                        <Button variant="info" href={"/vehiculos/" + vehiculo.id} >{vehiculo.matricula}</Button>
-                                                    </div>
-                                                </Row>
-                                            ))}
-                                            </Container>
-                                        </Col>
-                                    </Row>
-                                </Container>
-                            </Col>
-                            <Col>
-                                <Image src={usuario.imagen} roundedCircle="true" width="150" height="150" />
-                            </Col>
-                        </Row>
-                    </Container>
+                    <Col sm={3}>
+                        <h1>Hola, {usuario.name} </h1> <br/>
+                        <Image src={usuario.imagen} width="150" height="150" />
+                        <br/><br/>
+                        <Dropdown>
+                                            <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                                                Mis vehiculos:
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu>
+                                                {vehiculos.map((vehiculo) => (
+                                                        <div key={vehiculo.id}>
+                                                            <Dropdown.Item href={"/vehiculos/" + vehiculo.id} >{vehiculo.matricula}</Dropdown.Item>
+                                                        </div>
+                                                ))}
+                                            </Dropdown.Menu>
+                                            </Dropdown>
+                                            <br/><br/>
+                        <Button href={'/perfiles/' + id + '/update'}>Editar perfil</Button>
+                        </Col>
+                    <Col sm={8}>
+                        <br/><br/><br/><br/><br/>
+                            <Row>
+                                <Col sm="3"><b>Correo:</b></Col>
+                                <Col sm="3">
+                                    {usuario.email}
+                                </Col>
+                            </Row>
+                            <br/>
+                            <Row>
+                                <Col sm="3"><b>Nombre:</b></Col>
+                                <Col sm="3">
+                                    {usuario.name}
+                                </Col>
+                            </Row>
+                            <br/>
+                            <Row>
+                                <Col sm="3"><b>Apellidos:</b></Col>
+                                <Col sm="3">
+                                    {usuario.apellidos}
+                                </Col>
+                            </Row>
+                            <br/>
+                            <Row>
+                                <Col sm="3"><b>Fecha de nacimiento:</b></Col>
+                                <Col sm="3">
+                                    {usuario.fechaNacimiento}
+                                </Col>
+                            </Row>
+                            <Row>
+                            <Col></Col>
+                            </Row>
+                    </Col>
                 </Row>
-                <Row> 
-                </Row>
-            </Container>      
+            </Container>
         );
-    } else if (error) {
-        return (<div>Error</div>);
     } else {
-        return (<div>Loading</div>);
-    }
+        return (<Container>
+            <Row>
+                <Col></Col>
+                <Col><ReactLoading type='bars' color='black' height={400} width={400} /></Col>
+                <Col></Col>
+            </Row>
+            <Row>
+                <Col></Col>
+                <Col><h4>Cargando perfil...</h4></Col>
+                <Col></Col>
+            </Row>
+        </Container>);
+    } 
 
 }
 
