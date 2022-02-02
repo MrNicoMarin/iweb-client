@@ -25,7 +25,7 @@ function CrearTrayecto () {
         paradas : [],
         destino : '',
         piloto : {
-            id : 2
+            id : sessionStorage.getItem('id')
         },
         vehiculo : {},
         precio : 0,
@@ -38,7 +38,7 @@ function CrearTrayecto () {
             setLongitud(position.coords.longitude);
             setLocation(true);
         });
-        fetch("http://localhost:8000/v1/usuarios/2/vehiculos").then
+        fetch(process.env.REACT_APP_BASE_URL+"usuarios/" + sessionStorage.getItem('id') + "/vehiculos").then
         (response => response.json()).then
         ((data) => {
             setVehiculos(data);
@@ -102,7 +102,9 @@ function CrearTrayecto () {
             setTrayecto(trayecto);
             var requestOptions = {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json' ,
+                            'Authorization' : sessionStorage.getItem('token')
+                        },
                 body: JSON.stringify(trayecto)
             };
             fetch('http://localhost:8000/v1/trayectos', requestOptions);

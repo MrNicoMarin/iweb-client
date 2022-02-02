@@ -5,14 +5,17 @@ import ReactLoading from 'react-loading';
 
 function Perfiles () {
     const [usuarios, setUsuarios] = useState("[]");
+    const [id, setId] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [error, setError] = useState(false);
 
     useEffect(() => { 
-        fetch("http://localhost:8000/v1/usuarios").then
+        fetch(process.env.REACT_APP_BASE_URL+"usuarios").then
         (response => response.json()).then
         ((data) => {
             setUsuarios(data);
+            setId(sessionStorage.getItem('id'));
+            console.log(sessionStorage.getItem('id'))
             setIsLoaded(true);
         }, (error) => {
             setError(true);
@@ -37,8 +40,9 @@ function Perfiles () {
                     </thead>
                     <tbody>
                     {usuarios.map((usuario) => (
+                        id != usuario.id && 
                             <tr key={usuario.id}>
-                                <td> <Image src={usuario.imagen} roundedCircle="true" width="60" height="60" /></td>
+                                <td> <Image src={usuario.imagen} referrerpolicy="no-referrer" roundedCircle="true" width="60" height="60" /></td>
                                 <td>{usuario.email}</td>
                                 <td>{usuario.name}</td>
                                 <td>{usuario.apellidos}</td>

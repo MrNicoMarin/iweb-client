@@ -29,6 +29,8 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon; 
 
 function DetallesTrayecto () {
+    const [token, setToken] = useState(null);
+    const [idlogin, setId] = useState(null);
     function handleSubmit(e) {
         e.preventDefault();
         alert("A desarrollar en la siguiente iteracion");
@@ -40,6 +42,7 @@ function DetallesTrayecto () {
     const [gasolineras,setGasolineras] = useState([]);
     const [markerG, setMarkerG] = useState('');
     const [prediccion, setPrediccion] = useState('');
+    const [reservas, setReservas] = useState([]);
     let {id} = useParams();
 
     const [show, setShow] = useState(false);
@@ -47,26 +50,37 @@ function DetallesTrayecto () {
     const handleShow = () => setShow(true);
 
     useEffect(() => {
-        fetch("http://localhost:8000/v1/trayectos/" + id).then
+        setToken(sessionStorage.getItem('token'));
+        setId(sessionStorage.getItem('id'));
+
+        fetch(process.env.REACT_APP_BASE_URL+"trayectos/" + id + "/reservas").then
+        (response => response.json()).then
+        ((data) =>{
+            setReservas(data);
+        }, (error) => {});
+
+        fetch(process.env.REACT_APP_BASE_URL+"trayectos/" + id).then
         (response => response.json()).then
         ((data) => {
             setTrayecto(data);
-            setIsLoaded(true);
             const date = new Date(data.fechaSalida);
             const stringDate = date.getFullYear() + '-' + ((date.getMonth() + 1).toString().length == 1 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-' + (date.getDate().toString().length == 1 ? '0' + date.getDate() : date.getDate());
-            fetch("http://localhost:8000/v1/predicciones?" + new URLSearchParams({municipio : data.origen.municipio, fecha : stringDate, hora : date.getHours()})).then
+            setIsLoaded(true);
+            fetch(process.env.REACT_APP_BASE_URL+"predicciones?" + new URLSearchParams({municipio : data.origen.municipio, fecha : stringDate, hora : date.getHours()})).then
             (response => response.json()).then
             ((dataP) => {
                 console.log(dataP)
                 setPrediccion(dataP);},
             (error) => {setError(true);})
-            fetch("http://localhost:8000/v1/gasolineras?" + new URLSearchParams({latitud : data.origen.latitud, longitud : data.origen.longitud, distancia: 10})).then
+            fetch(process.env.REACT_APP_BASE_URL+"gasolineras?" + new URLSearchParams({latitud : data.origen.latitud, longitud : data.origen.longitud, distancia: 10})).then
             (response => response.json()).then
             ((dataG) => {
                 setGasolineras(dataG);},
             (error) => {setError(true);});},
             
         (error) => {setError(true);});
+
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -85,6 +99,10 @@ function DetallesTrayecto () {
         };
         fetch('http://localhost:8000/v1/trayectos/'+id, requestOptions).then
         (response => {window.location.replace("/trayectos")})
+    }
+
+    function fechaValida(date) {
+        var now = Date();
     }
 
     if (isLoaded) {
@@ -121,7 +139,7 @@ function DetallesTrayecto () {
                             <Row>
                                 <Col>
                                 <ListGroup>
-                                    <ListGroup.Item>Piloto: {trayecto.piloto.name + ' ' + trayecto.piloto.apellidos} </ListGroup.Item>
+                                    <ListGroup.Item>Piloto: {trayecto.piloto.name} </ListGroup.Item>
                                     <ListGroup.Item>Correo: {trayecto.piloto.email} </ListGroup.Item>
                                 </ListGroup>
                                 </Col>
@@ -183,8 +201,12 @@ function DetallesTrayecto () {
                     <ListGroup horizontal>
                         <ListGroup.Item>Fecha: {formatoFecha(trayecto.fechaSalida)} </ListGroup.Item>
                         <ListGroup.Item>Precio: {trayecto.precio} €</ListGroup.Item>
-                        <ListGroup.Item><Button onClick={handleSubmit} variant="success">Unirme!</Button>{' '}</ListGroup.Item>
-                        <ListGroup.Item><Button onClick={handleShow} variant="danger">Borrar</Button>{' '}</ListGroup.Item>
+                        {idlogin != trayecto.piloto.id && (
+                            <ListGroup.Item><Button onClick={handleSubmit} variant="success">Unirme!</Button>{' '}</ListGroup.Item>
+                        )}
+                        {idlogin == trayecto.piloto.id && (
+                            <ListGroup.Item><Button onClick={handleShow} variant="danger">Borrar</Button>{' '}</ListGroup.Item>
+                        )}
                     </ListGroup>
                 </Col>
             </Row>

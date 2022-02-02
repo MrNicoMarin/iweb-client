@@ -19,7 +19,8 @@ function App() {
       <NavbarWeb />
       <Routes>
         <Route path="/" element={<Home />} />
-          <Route path="trayectos" element={<Trayectos />} />
+          <Route path="trayectos" element={<Trayectos mis="False" />} />
+          <Route path="misTrayectos" element={<Trayectos mis="True"/>} />
           <Route path="trayectos/:id" element={<DetallesTrayecto />} />
           <Route path="trayectos/new" element={<CrearTrayecto />} />
           <Route path="perfiles" element={<Perfiles />} />

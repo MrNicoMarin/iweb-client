@@ -9,7 +9,7 @@ import Spinner from 'react-bootstrap/Spinner'
 const INITIAL_OFFSET = 0;
 
 
-function Trayectos () {
+function Trayectos(props) {
     const [trayectos, setTrayectos] = useState("[]");
     const [isLoaded, setIsLoaded] = useState(false);
     const [valueMin, setValueMin ] = useState(1);
@@ -20,16 +20,28 @@ function Trayectos () {
     const [isLoadingMas, setIsLoadingMas] = useState(false);
     const [masResultados, setMasResultados] = useState(true);
 
-    useEffect(() => { 
-        fetch("http://localhost:8000/v1/trayectos?" + new URLSearchParams(params)).then
-        (response => response.json()).then
-        ((data) => {
-            setTrayectos(data);
-            setIsLoaded(true);
-        }, (error) => {
-            setError(true);
-            console.log(error);
-        })
+    useEffect(() => {
+        if(props.mis == "True"){
+            fetch(process.env.REACT_APP_BASE_URL+"usuarios/"+sessionStorage.getItem('id')+"/trayectos?" + new URLSearchParams(params)).then
+            (response => response.json()).then
+            ((data) => {
+                setTrayectos(data);
+                setIsLoaded(true);
+            }, (error) => {
+                setError(true);
+                console.log(error);
+            })
+        }else if(props.mis == "False"){
+            fetch(process.env.REACT_APP_BASE_URL+"trayectos?" + new URLSearchParams(params)).then
+            (response => response.json()).then
+            ((data) => {
+                setTrayectos(data);
+                setIsLoaded(true);
+            }, (error) => {
+                setError(true);
+                console.log(error);
+            })
+        }
     }, []);
 
     function formatoFecha(f) {
@@ -43,7 +55,7 @@ function Trayectos () {
         setIsLoadingMas(true);
         params.offset += 10;
         setParams(params);
-        fetch("http://localhost:8000/v1/trayectos?" + new URLSearchParams(params)).then
+        fetch(process.env.REACT_APP_BASE_URL+"trayectos?" + new URLSearchParams(params)).then
         (response => response.json()).then
         ((data) => {
             if (data.length > 0) {
@@ -116,7 +128,7 @@ function Trayectos () {
         setIsFiltring(true);
         params.offset = INITIAL_OFFSET;
         setParams(params);
-        fetch("http://localhost:8000/v1/trayectos?" + new URLSearchParams(params)).then
+        fetch(process.env.REACT_APP_BASE_URL+"trayectos?" + new URLSearchParams(params)).then
         (response => response.json()).then
         ((data) => {
             setTrayectos(data);
@@ -186,7 +198,7 @@ function Trayectos () {
                         <tr key={trayecto.id}>
                             <td>{trayecto.origen.municipio}</td>
                             <td>{trayecto.destino.municipio}</td>
-                            <td>{trayecto.piloto.name}, {trayecto.piloto.apellidos}</td>
+                            <td>{trayecto.piloto.name}</td>
                             <td>{trayecto.precio}€</td>
                             <td>{formatoFecha(trayecto.fechaSalida)}</td>
                             <td><a href={"/trayectos/" + trayecto.id}>Mas info</a></td>

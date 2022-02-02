@@ -28,7 +28,10 @@ function AnadirVehiculo () {
         matricula : '',
         imagen : '' ,
         usuario : {},
-        plazas : 0
+        plazas : 0,
+        usuario : {
+            id : sessionStorage.getItem('id')
+        }
     });
 
     function processImage(event){
@@ -59,10 +62,6 @@ function AnadirVehiculo () {
         setVehiculo(vehiculo)
     }
 
-    function handleUsuario(event){
-        vehiculo.usuario.id = event.target.value
-        setVehiculo(vehiculo)
-    }
     function handleBoton(event){
         if(vehiculo.modelo == null || vehiculo.modelo == "" ||
         vehiculo.plazas == null || vehiculo.plazas == 0 ||
@@ -75,7 +74,7 @@ function AnadirVehiculo () {
                 vehiculo.imagen = URL_IMAGEN_COCHE_DEFECTO;
                 var requestOptions = {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') },
                     body: JSON.stringify(vehiculo)
                 };
                 fetch('http://localhost:8000/v1/vehiculos', requestOptions).then
@@ -94,7 +93,7 @@ function AnadirVehiculo () {
                     setVehiculo(vehiculo)
                     var requestOptions = {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') },
                         body: JSON.stringify(vehiculo)
                     };
                     fetch('http://localhost:8000/v1/vehiculos', requestOptions).then
@@ -106,15 +105,7 @@ function AnadirVehiculo () {
     }
 
     useEffect(() => { 
-        fetch("http://localhost:8000/v1/usuarios").then
-        (response => response.json()).then
-        ((data) => {
-            setUsuarios(data);
-            setIsLoaded(true)
-        }, (error) => {
-            setError(true);
-            console.log(error);
-        })
+        setIsLoaded(true);
     }, []);
     
     if (isLoaded) {
@@ -173,13 +164,6 @@ function AnadirVehiculo () {
                     <Row>
                         <Col sm={7}>
                         <Row>
-                        <Col sm={10}><Form.Select aria-label="Default select example" onChange={handleUsuario}>
-                            <option>Seleccione un usuario*</option>
-                                {usuarios.map((usuario) => (
-                            <option key={usuario.id} value={usuario.id}>{usuario.name + " " + usuario.apellidos}</option>
-                            ))}
-                        </Form.Select>
-                        </Col>
                         </Row>
                         <br/><br/>
                         <Row>

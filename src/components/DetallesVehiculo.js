@@ -6,13 +6,17 @@ import { useParams } from 'react-router-dom';
 import ReactLoading from 'react-loading';
 
 function DetallesVehiculo () {
+    const [token, setToken] = useState(null);
+    const [idlogin, setId] = useState(null);
     const [vehiculo, setVehiculos] = useState("[]");
     const [isLoaded, setIsLoaded] = useState(false);
     const [error, setError] = useState(false);
     let { id } = useParams();
 
-    useEffect(() => { 
-        fetch("http://localhost:8000/v1/vehiculos/" + id).then
+    useEffect(() => {
+        setToken(sessionStorage.getItem('token'));
+        setId(sessionStorage.getItem('id'));
+        fetch(process.env.REACT_APP_BASE_URL+"vehiculos/" + id).then
         (response => response.json()).then
         ((data) => {
             setVehiculos(data);
@@ -56,7 +60,10 @@ function DetallesVehiculo () {
                                         <Col><b>Plazas:</b></Col> <Col>{vehiculo.plazas}</Col>
                                     </Row>
                                     <br/>
-                                    <Row><Col><Button variant="primary" href={"/vehiculos/" + vehiculo.id + "/update"} >Editar</Button></Col></Row>
+                                    {idlogin == vehiculo.usuario.id && (
+                                        <Row><Col><Button variant="primary" href={"/vehiculos/" + vehiculo.id + "/update"} >Editar</Button></Col></Row>
+                                    )}
+                                    
                                 </Container>
                             </Col>
                             <Col>

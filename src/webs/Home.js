@@ -24,7 +24,7 @@ function Home () {
       var date = new Date();
       var dateString = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
       params.fechaMin = dateString;
-      fetch("http://localhost:8000/v1/trayectos?" + new URLSearchParams(params)).then
+      fetch(process.env.REACT_APP_BASE_URL+"trayectos?" + new URLSearchParams(params)).then
       (response => response.json()).then
       ((data) => {
           setTrayectos(data);
@@ -46,7 +46,7 @@ function Home () {
       setIsLoadingMas(true);
       params.offset += 10;
       setParams(params);
-      fetch("http://localhost:8000/v1/trayectos?" + new URLSearchParams(params)).then
+      fetch(process.env.REACT_APP_BASE_URL+"trayectos?" + new URLSearchParams(params)).then
       (response => response.json()).then
       ((data) => {
           if (data.length > 0) {
@@ -84,7 +84,7 @@ function Home () {
                       <tr key={trayecto.id}>
                           <td>{trayecto.origen.municipio}</td>
                           <td>{trayecto.destino.municipio}</td>
-                          <td>{trayecto.piloto.name}, {trayecto.piloto.apellidos}</td>
+                          <td>{trayecto.piloto.name}</td>
                           <td>{trayecto.precio}€</td>
                           <td>{formatoFecha(trayecto.fechaSalida)}</td>
                           <td><a href={"/trayectos/" + trayecto.id}>Mas info</a></td>

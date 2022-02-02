@@ -18,7 +18,7 @@ function EditarPerfil () {
     let { id } = useParams();
 
     useEffect(() => { 
-        fetch("http://localhost:8000/v1/usuarios/" + id).then
+        fetch(process.env.REACT_APP_BASE_URL+"usuarios/" + id).then
         (response => response.json()).then
         ((data) => {
             setFileUrl(data.imagen)

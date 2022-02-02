@@ -76,7 +76,7 @@ function EditarVehiculo () {
                 setVehiculo(vehiculo)
                 var requestOptions = {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') },
                     body: JSON.stringify(vehiculo)
                 };
                 fetch('http://localhost:8000/v1/vehiculos/' + id , requestOptions).then
@@ -85,7 +85,7 @@ function EditarVehiculo () {
         }else{
             var requestOptions = {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') },
                 body: JSON.stringify(vehiculo)
             };
             fetch('http://localhost:8000/v1/vehiculos/'+ id, requestOptions).then
@@ -95,14 +95,15 @@ function EditarVehiculo () {
 
     function handleDeleteVehiculo(event){
         var requestOptions = {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') }
         };
         fetch('http://localhost:8000/v1/vehiculos/'+ id, requestOptions).then
         (response => {window.location.replace("/vehiculos")});
     }
 
     useEffect(() => { 
-        fetch("http://localhost:8000/v1/vehiculos/"+ id).then
+        fetch(process.env.REACT_APP_BASE_URL+"vehiculos/"+ id).then
         (response => response.json()).then
         ((data) => {
             setVehiculo(data);

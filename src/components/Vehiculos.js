@@ -14,7 +14,11 @@ function Vehiculos () {
     const [params, setParams] = useState({});
 
     useEffect(() => { 
-        fetch("http://localhost:8000/v1/vehiculos").then
+        var requestOptions = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') }
+        };
+        fetch(process.env.REACT_APP_BASE_URL+"usuarios/"+sessionStorage.getItem('id')+"/vehiculos",requestOptions).then
         (response => response.json()).then
         ((data) => {
             setVehiculos(data);
@@ -27,7 +31,11 @@ function Vehiculos () {
 
     function handleFiltrar(event){
         setIsFiltring(true);
-        fetch("http://localhost:8000/v1/vehiculos?" + new URLSearchParams(params)).then
+        var requestOptions = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') }
+        };
+        fetch(process.env.REACT_APP_BASE_URL+"usuarios/" + sessionStorage.getItem("id") + "/vehiculos?" + new URLSearchParams(params),requestOptions).then
         (response => response.json()).then
         ((data) => {
             setVehiculos(data);
@@ -102,7 +110,6 @@ function Vehiculos () {
                     <thead>
                         <tr>
                             <th>Imagen</th>
-                            <th>Usuario</th>
                             <th>Modelo</th>
                             <th>Color</th>
                             <th>Matricula</th>
@@ -113,7 +120,6 @@ function Vehiculos () {
                     {vehiculos.map((vehiculo) => (
                             <tr key={vehiculo.id}>
                                 <td>{<Image src={vehiculo.imagen} roundedCircle="true" width="100" height="100" />}</td>
-                                <td>{vehiculo.usuario.name}, {vehiculo.usuario.apellidos}</td>
                                 <td>{vehiculo.modelo}</td>
                                 <td>{vehiculo.color}</td>
                                 <td>{vehiculo.matricula}</td>

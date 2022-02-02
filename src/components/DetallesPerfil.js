@@ -7,32 +7,46 @@ import ReactLoading from 'react-loading';
 import Badge from 'react-bootstrap/Badge'
 
 function DetallesPerfil () {
+    const [token, setToken] = useState(null);
+    const [comentarios, setComentarios] = useState(null);
+    const [idlogin, setId] = useState(null);
     const [usuario, setUsuario] = useState("[]");
     const [isLoaded, setIsLoaded] = useState(false);
     const [error, setError] = useState(false);
     const [vehiculos, setVehiculos] = useState("[]");
     let { id } = useParams();
 
-    useEffect(() => { 
-        fetch("http://localhost:8000/v1/usuarios/" + id).then
+    useEffect(() => {
+        setToken(sessionStorage.getItem('token'));
+        setId(sessionStorage.getItem('id'));
+        fetch(process.env.REACT_APP_BASE_URL+"usuarios/" + id).then
         (response => response.json()).then
         ((data) => {
             setUsuario(data);
             //setIsLoaded(true);
-        }, (error) => {
-            setError(true);
-            console.log(error);
-        })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        fetch("http://localhost:8000/v1/usuarios/"+id+"/vehiculos").then
+            fetch(process.env.REACT_APP_BASE_URL+"usuarios/"+id+"/vehiculos").then
+            (response => response.json()).then
+            ((data) => {
+                setVehiculos(data);
+                //setIsLoaded(true);
+                fetch(process.env.REACT_APP_BASE_URL+"usuarios/"+id+"/comentarios").then
         (response => response.json()).then
         ((data) => {
-            setVehiculos(data);
+            setComentarios(data);
             setIsLoaded(true);
         }, (error) => {
             setError(true);
             console.log(error);
         });
+            }, (error) => {
+                setError(true);
+                console.log(error);
+            });
+        }, (error) => {
+            setError(true);
+            console.log(error);
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (isLoaded) {
@@ -40,15 +54,15 @@ function DetallesPerfil () {
             <Container>
                 <Row>
                     <Col sm={3}>
-                        <h1>Hola, {usuario.name} </h1> <br/>
-                        <Image src={usuario.imagen} width="150" height="150" />
+                        <h1>{usuario.name} </h1> <br/>
+                        <Image src={usuario.imagen} referrerpolicy="no-referrer" width="150" height="150" />
                         <br/><br/>
                         <Dropdown>
                                             <Dropdown.Toggle variant="primary" id="dropdown-basic">
                                                 Mis vehiculos:
                                             </Dropdown.Toggle>
                                             <Dropdown.Menu>
-                                                {vehiculos.map((vehiculo) => (
+                                            {vehiculos != null && vehiculos.map((vehiculo) => (
                                                         <div key={vehiculo.id}>
                                                             <Dropdown.Item href={"/vehiculos/" + vehiculo.id} >{vehiculo.matricula}</Dropdown.Item>
                                                         </div>
@@ -56,7 +70,9 @@ function DetallesPerfil () {
                                             </Dropdown.Menu>
                                             </Dropdown>
                                             <br/><br/>
-                        <Button href={'/perfiles/' + id + '/update'}>Editar perfil</Button>
+                        {idlogin == usuario.id && (
+                            <Button href={'/perfiles/' + id + '/update'}>Editar perfil</Button>
+                        )}
                         </Col>
                     <Col sm={8}>
                         <br/><br/><br/><br/><br/>
@@ -91,6 +107,20 @@ function DetallesPerfil () {
                             <Col></Col>
                             </Row>
                     </Col>
+                </Row>
+                <Row>
+                <h1>Comentarios</h1>
+                    {comentarios != null && comentarios.map((comentario) => (
+                        <Row key={comentario.id}>
+                            <Col>Creador: {comentario.creador.email}</Col>
+                            <Col>Texto: {comentario.text}</Col>
+                        </Row>
+                    ))}
+                    {comentarios != null && comentarios.length == 0 && (
+                        <Row>
+                            <Col>No hay comentarios aún. Sé el primero en comentarle :)</Col>
+                        </Row>
+                    )}
                 </Row>
             </Container>
         );
