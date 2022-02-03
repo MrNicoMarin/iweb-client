@@ -128,16 +128,29 @@ function Trayectos(props) {
         setIsFiltring(true);
         params.offset = INITIAL_OFFSET;
         setParams(params);
-        fetch(process.env.REACT_APP_BASE_URL+"trayectos?" + new URLSearchParams(params)).then
-        (response => response.json()).then
-        ((data) => {
-            setTrayectos(data);
-            setMasResultados(true);
-            setIsFiltring(false);
-        }, (error) => {
-            setError(true);
-            console.log(error);
-        })
+        if(props.mis == "True"){
+            fetch(process.env.REACT_APP_BASE_URL+"usuarios/"+sessionStorage.getItem('id')+"/trayectos?" + new URLSearchParams(params)).then
+            (response => response.json()).then
+            ((data) => {
+                setTrayectos(data);
+                setMasResultados(true);
+                setIsFiltring(false);
+            }, (error) => {
+                setError(true);
+                console.log(error);
+            })
+        }else{
+            fetch(process.env.REACT_APP_BASE_URL+"trayectos?" + new URLSearchParams(params)).then
+            (response => response.json()).then
+            ((data) => {
+                setTrayectos(data);
+                setMasResultados(true);
+                setIsFiltring(false);
+            }, (error) => {
+                setError(true);
+                console.log(error);
+            })
+        }
     }
 
     if (isLoaded) {

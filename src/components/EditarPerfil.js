@@ -72,7 +72,7 @@ function EditarPerfil () {
                 setUsuario(usuario)
                 var requestOptions = {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json' , 'Authorization' : sessionStorage.getItem('token')},
                     body: JSON.stringify(usuario)
                 };
                 fetch('http://localhost:8000/v1/usuarios/'+id, requestOptions).then
@@ -81,7 +81,7 @@ function EditarPerfil () {
         }else{
             var requestOptions = {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json' , 'Authorization' : sessionStorage.getItem('token')},
                 body: JSON.stringify(usuario)
             };
             fetch('http://localhost:8000/v1/usuarios/'+id, requestOptions).then

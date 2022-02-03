@@ -12,6 +12,7 @@ import L from 'leaflet';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Card from 'react-bootstrap/Card'
 
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -33,7 +34,14 @@ function DetallesTrayecto () {
     const [idlogin, setId] = useState(null);
     function handleSubmit(e) {
         e.preventDefault();
-        alert("A desarrollar en la siguiente iteracion");
+
+        var requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') },
+            body: JSON.stringify({"trayecto": {"id":trayecto.id}})
+        };
+        fetch('http://localhost:8000/v1/reservas', requestOptions).then
+        (response => {window.location.replace("/trayectos/"+ trayecto.id)});
     }
 
     const [trayecto, setTrayecto] = useState("");
@@ -57,9 +65,7 @@ function DetallesTrayecto () {
         (response => response.json()).then
         ((data) =>{
             setReservas(data);
-        }, (error) => {});
-
-        fetch(process.env.REACT_APP_BASE_URL+"trayectos/" + id).then
+            fetch(process.env.REACT_APP_BASE_URL+"trayectos/" + id).then
         (response => response.json()).then
         ((data) => {
             setTrayecto(data);
@@ -79,6 +85,9 @@ function DetallesTrayecto () {
             (error) => {setError(true);});},
             
         (error) => {setError(true);});
+        }, (error) => {});
+
+        
 
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,8 +110,19 @@ function DetallesTrayecto () {
         (response => {window.location.replace("/trayectos")})
     }
 
-    function fechaValida(date) {
-        var now = Date();
+    function fechaValida() {
+        var now = new Date();
+        var fechaSalida = new Date(trayecto.fechaSalida);
+        return fechaSalida.getTime() > now.getTime();
+    }
+
+    function tengoReserva() {
+        for (var i = 0; i < reservas.length; i++) {
+            if (reservas[i].usuario.id == idlogin) {
+                return true;
+            }
+        }
+        return false;
     }
 
     if (isLoaded) {
@@ -133,41 +153,40 @@ function DetallesTrayecto () {
 
             <Container>
             <Row>
-                <Col>
-                    <Container>  
-                        <Col>
-                            <Row>
-                                <Col>
-                                <ListGroup>
-                                    <ListGroup.Item>Piloto: {trayecto.piloto.name} </ListGroup.Item>
-                                    <ListGroup.Item>Correo: {trayecto.piloto.email} </ListGroup.Item>
-                                </ListGroup>
-                                </Col>
-                                <Col>
-                                <Image src = {trayecto.piloto.imagen} thumbnail width='50%'></Image>
-                                </Col>
-                            </Row>
-                            <br/>
-                            <Row>
-                                <Col>
-                                <ListGroup>
-                                    <ListGroup.Item>Modelo: {trayecto.vehiculo.modelo}</ListGroup.Item>
-                                    <ListGroup.Item>Plazas: {trayecto.vehiculo.plazas}</ListGroup.Item>
-                                    <ListGroup.Item>Precio: {trayecto.precio}€</ListGroup.Item>
-                                </ListGroup>
-                                </Col>
-                                <Col>
-                                <Image src = {trayecto.vehiculo.imagen} thumbnail></Image>
-                                </Col>
-                            </Row>
-
-                            
-                        </Col>
-                    </Container>
-
-                </Col>
-                <Col>
-                    <MapContainer center={[trayecto.origen.latitud, trayecto.origen.longitud]} zoom={5} scrollWheelZooms style={{height: '350px'}}>
+                <Row>
+                <Row xs={1} md={3} className="g-4">
+                    <Col>
+                        <Card style={{ width: '25rem' }}>
+                        <Card.Body>
+                        <Card.Title>Piloto</Card.Title>
+                        <Image src={trayecto.piloto.imagen} referrerpolicy="no-referrer" roundedCircle="true" width="75" height="75" />
+                        <Card.Text></Card.Text>
+                          <Card.Text>Email: {trayecto.piloto.email}</Card.Text>
+                          <Card.Text></Card.Text>
+                          <Card.Text>Nombre: {trayecto.piloto.name}</Card.Text>
+                          <Card.Text>{' '}</Card.Text>
+                          <Card.Text></Card.Text>
+                        </Card.Body>
+                      </Card>
+                      </Col>
+                      <Col></Col>
+                      <Col>
+                        <Card style={{ width: '25rem' }}>
+                        <Card.Body>
+                        <Card.Title>Vehiculo</Card.Title>
+                        <Image src={trayecto.vehiculo.imagen} referrerpolicy="no-referrer" roundedCircle="true" width="75" height="75" />
+                            <Card.Text></Card.Text>
+                          <Card.Text>Modelo: {trayecto.vehiculo.modelo}</Card.Text>
+                          <Card.Text></Card.Text>
+                          <Card.Text>Plazas: {trayecto.vehiculo.plazas}</Card.Text>
+                          <Card.Text></Card.Text>
+                        </Card.Body>
+                      </Card>
+                      </Col>
+                </Row>
+                </Row>
+                <Row>
+                    <MapContainer center={[trayecto.origen.latitud, trayecto.origen.longitud]} zoom={5} scrollWheelZooms style={{height: '500px'}}>
                         <TileLayer
                             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -197,18 +216,30 @@ function DetallesTrayecto () {
                             </Marker>
                         )}
                     </MapContainer>
-
-                    <ListGroup horizontal>
+                    <Container>
+                        <Row md={3}>
+                            <Col></Col>
+                            <Col md="auto">
+                            <ListGroup horizontal>
                         <ListGroup.Item>Fecha: {formatoFecha(trayecto.fechaSalida)} </ListGroup.Item>
                         <ListGroup.Item>Precio: {trayecto.precio} €</ListGroup.Item>
-                        {idlogin != trayecto.piloto.id && (
-                            <ListGroup.Item><Button onClick={handleSubmit} variant="success">Unirme!</Button>{' '}</ListGroup.Item>
+                        {idlogin != trayecto.piloto.id && fechaValida() && !tengoReserva() && reservas.length < (trayecto.vehiculo.plazas - 1) && (
+                            <ListGroup.Item><Button onClick={handleSubmit} variant="success">Reservar</Button>{' '}</ListGroup.Item>
+                        )}
+                        {idlogin != trayecto.piloto.id && tengoReserva() && (
+                            <ListGroup.Item><Button disabled variant="warning">Reservado</Button>{' '}</ListGroup.Item>
+                        )}
+                        {idlogin != trayecto.piloto.id && !tengoReserva() && reservas.length >= (trayecto.vehiculo.plazas - 1) && (
+                            <ListGroup.Item><Button disabled variant="warning">No quedan plazas</Button>{' '}</ListGroup.Item>
                         )}
                         {idlogin == trayecto.piloto.id && (
                             <ListGroup.Item><Button onClick={handleShow} variant="danger">Borrar</Button>{' '}</ListGroup.Item>
                         )}
                     </ListGroup>
-                </Col>
+                            </Col>
+                        </Row>
+                    </Container>
+                </Row>
             </Row>
             <Row>
                 <Col></Col>
@@ -233,7 +264,7 @@ function DetallesTrayecto () {
             </Container>)}
                 {gasolineras.length > 0 && (
                     <><h1>Gasolineras cercanas</h1>
-                                <Table hover style={{'overflowY' : 'scroll','height':'500px','display':'block'}}>
+                                <Table hover style={{'overflowY' : 'scroll','height':'250px','display':'block'}}>
                                     <thead>
                                         <tr>
                                             <th>Dirección</th>

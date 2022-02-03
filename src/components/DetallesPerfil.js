@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {Table} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
-import {Image, Container, Row, Col, Button, Form, Dropdown} from 'react-bootstrap';
+import {Image, Container, Row, Col, Button, Form, Dropdown, Modal} from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import ReactLoading from 'react-loading';
 import Badge from 'react-bootstrap/Badge'
+import FloatingLabel from 'react-bootstrap/FloatingLabel'
+import Card from 'react-bootstrap/Card'
 
 function DetallesPerfil () {
     const [token, setToken] = useState(null);
@@ -14,7 +16,11 @@ function DetallesPerfil () {
     const [isLoaded, setIsLoaded] = useState(false);
     const [error, setError] = useState(false);
     const [vehiculos, setVehiculos] = useState("[]");
+    const [comentario, setComentario] = useState(null);
     let { id } = useParams();
+    const [showModal, setShowModal] = useState(false);
+    const handleCloseModal = () => setShowModal(false);
+    const handleShowModal = () => setShowModal(true);
 
     useEffect(() => {
         setToken(sessionStorage.getItem('token'));
@@ -49,13 +55,42 @@ function DetallesPerfil () {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    function onChangeComentario(e){
+        setComentario(e.target.value);
+    }
+
+    function comentar(event){
+        if(comentario != null && comentario != ""){
+            var requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') },
+                body: JSON.stringify({"usuario":{"id":usuario.id},"text":comentario})
+            };
+            fetch('http://localhost:8000/v1/comentarios', requestOptions).then
+            (response => {window.location.replace("/perfiles/"+id)});
+        }else{
+            setShowModal(true)
+        }
+    }
+
     if (isLoaded) {
         return( 
+            <>
+            <Modal show={showModal} onHide={handleCloseModal} backdrop="static" >
+                <Modal.Header closeButton>
+                    <Modal.Title>Error en el comentario</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>No hay mensaje de texto. Para comentar hay que escribir algo :)</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={handleCloseModal}>De acuerdo</Button>
+                </Modal.Footer>
+            </Modal>
+
             <Container>
                 <Row>
                     <Col sm={3}>
                         <h1>{usuario.name} </h1> <br/>
-                        <Image src={usuario.imagen} referrerpolicy="no-referrer" width="150" height="150" />
+                        <Image src={usuario.imagen} roundedCircle referrerPolicy="no-referrer" width="150" height="150" />
                         <br/><br/>
                         <Dropdown>
                                             <Dropdown.Toggle variant="primary" id="dropdown-basic">
@@ -110,19 +145,52 @@ function DetallesPerfil () {
                 </Row>
                 <Row>
                 <h1>Comentarios</h1>
+                </Row>
+                <br/>
+                <Row md={4} className="g-4">
                     {comentarios != null && comentarios.map((comentario) => (
-                        <Row key={comentario.id}>
-                            <Col>Creador: {comentario.creador.email}</Col>
-                            <Col>Texto: {comentario.text}</Col>
-                        </Row>
+                        <Col>
+                        <Card style={{ width: '18rem' }}>
+                        <Card.Body>
+                        <Image src={comentario.creador.imagen} referrerpolicy="no-referrer" roundedCircle="true" width="40" height="40" />
+                          {' '}
+                          <h9><b>{comentario.creador.email}</b></h9><br/>
+                          <Card.Text>{comentario.text}</Card.Text>
+                        </Card.Body>
+                      </Card>
+                      </Col>
                     ))}
-                    {comentarios != null && comentarios.length == 0 && (
+                </Row>
+                    {comentarios != null && comentarios.length == 0 && idlogin != usuario.id && (
                         <Row>
                             <Col>No hay comentarios aún. Sé el primero en comentarle :)</Col>
                         </Row>
                     )}
-                </Row>
+                    {comentarios != null && comentarios.length == 0 && idlogin == usuario.id && (
+                        <Row>
+                            <Col>No tienes comentarios por ahora</Col>
+                        </Row>
+                    )}
+                    <br/>
+                    <br/>
+                    { idlogin != usuario.id && (<Row>
+                        <Col></Col>
+                        <Col>
+                        <FloatingLabel controlId="floatingTextarea2" label="Comentario">
+                        <Form.Control
+                        as="textarea"
+                        placeholder="Leave a comment here"
+                        style={{ height: '100px' }}
+                        onChange={onChangeComentario}
+                        />
+                        </FloatingLabel>
+                        <br/>
+                        <Button onClick={comentar}>Enviar comentario</Button>
+                        </Col>
+                        <Col></Col>
+                    </Row>)}
             </Container>
+            </>
         );
     } else {
         return (<Container>

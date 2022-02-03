@@ -31,7 +31,6 @@ function NavbarWeb () {
                 sessionStorage.setItem('nombre', data.name);
            }
         })
-
     }
 
     const handleLogOut = (e) => {
@@ -42,6 +41,27 @@ function NavbarWeb () {
         setToken(null);
         setId(null);
         setNombre(null);
+        window.location.replace("/");
+    }
+
+    async function checkToken () {
+        if (token != null) {
+            var requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json','Authorization' : token }
+            };
+            var response = await fetch(process.env.REACT_APP_BASE_URL + 'oauth/check', requestOptions);
+            var data = await response.json()
+            if (data.mensaje == "caducado") {
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('id');
+                sessionStorage.removeItem('nombre');
+                setToken(null);
+                setId(null);
+                setNombre(null);
+                window.location.replace("/");
+            }
+        }
     }
 
     useEffect (() => {
@@ -105,6 +125,7 @@ function NavbarWeb () {
                             <Nav.Link href={"/perfiles/"+id}>Mi perfil</Nav.Link>
                             <Nav.Link href="/vehiculos/">Mis vehiculos</Nav.Link>
                             <Nav.Link href="/misTrayectos/">Mis trayectos</Nav.Link>
+                            <Nav.Link href="/misReservas/">Mis reservas</Nav.Link>
                             <Button onClick={handleLogOut}>Logout</Button>
                             </>
                         )}

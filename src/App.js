@@ -12,8 +12,11 @@ import Vehiculos from './components/Vehiculos';
 import AnadirVehiculo from './components/AnadirVehiculo'
 import EditarPerfil from './components/EditarPerfil'
 import EditarVehiculo from './components/EditarVehiculo'
+import MisReservas from './components/MisReservas';
+import Footer from './components/Footer';
 
 function App() {
+
   return (
     <div className="App">
       <NavbarWeb />
@@ -30,6 +33,7 @@ function App() {
           <Route path="vehiculos/:id" element={<DetallesVehiculo />} />
           <Route path="vehiculos/new" element={<AnadirVehiculo />} />
           <Route path="vehiculos/:id/update" element={<EditarVehiculo />} />
+          <Route path="misReservas" element={<MisReservas />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} />
       </Routes>
     </div>
