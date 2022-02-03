@@ -223,16 +223,16 @@ function DetallesTrayecto () {
                             <ListGroup horizontal>
                         <ListGroup.Item>Fecha: {formatoFecha(trayecto.fechaSalida)} </ListGroup.Item>
                         <ListGroup.Item>Precio: {trayecto.precio} €</ListGroup.Item>
-                        {idlogin != trayecto.piloto.id && fechaValida() && !tengoReserva() && reservas.length < (trayecto.vehiculo.plazas - 1) && (
+                        {token != null && idlogin != trayecto.piloto.id && fechaValida() && !tengoReserva() && reservas.length < (trayecto.vehiculo.plazas - 1) && (
                             <ListGroup.Item><Button onClick={handleSubmit} variant="success">Reservar</Button>{' '}</ListGroup.Item>
                         )}
-                        {idlogin != trayecto.piloto.id && tengoReserva() && (
+                        {token != null && idlogin != trayecto.piloto.id && tengoReserva() && (
                             <ListGroup.Item><Button disabled variant="warning">Reservado</Button>{' '}</ListGroup.Item>
                         )}
-                        {idlogin != trayecto.piloto.id && !tengoReserva() && reservas.length >= (trayecto.vehiculo.plazas - 1) && (
+                        {token != null && idlogin != trayecto.piloto.id && !tengoReserva() && reservas.length >= (trayecto.vehiculo.plazas - 1) && (
                             <ListGroup.Item><Button disabled variant="warning">No quedan plazas</Button>{' '}</ListGroup.Item>
                         )}
-                        {idlogin == trayecto.piloto.id && (
+                        {token != null && idlogin == trayecto.piloto.id && (
                             <ListGroup.Item><Button onClick={handleShow} variant="danger">Borrar</Button>{' '}</ListGroup.Item>
                         )}
                     </ListGroup>
