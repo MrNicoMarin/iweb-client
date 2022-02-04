@@ -110,7 +110,7 @@ function DetallesPerfil () {
                         )}
                         <br/><br/>
                         {idlogin == usuario.id && usuario.twitterToken == null && (
-                        <Button href={'https://twitter.com/i/oauth2/authorize?response_type=code&client_id=a20wU2JuTnE3SGlfSmh0NnAtcDQ6MTpjaQ&redirect_uri=' + 'http://localhost:3000/loginTwitter' + '&scope=tweet.write%20tweet.read%20users.read%20follows.read%20offline.access&state=state&code_challenge=challenge&code_challenge_method=plain'}>Vincular con Twitter</Button>)}
+                        <Button href={'https://twitter.com/i/oauth2/authorize?response_type=code&client_id=a20wU2JuTnE3SGlfSmh0NnAtcDQ6MTpjaQ&redirect_uri=' + 'https://zoomcar-iweb.herokuapp.com/loginTwitter' + '&scope=tweet.write%20tweet.read%20users.read%20follows.read%20offline.access&state=state&code_challenge=challenge&code_challenge_method=plain'}>Vincular con Twitter</Button>)}
                         {idlogin == usuario.id && usuario.twitterToken != null && (
                         <Button disabled>Twitter vinculado</Button>)}
                     </Col>
