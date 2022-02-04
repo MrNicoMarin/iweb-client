@@ -52,7 +52,7 @@ function Trayectos(props) {
             headers: { 'Content-Type': 'application/json' , 'Authorization' : sessionStorage.getItem('token')},
             body: JSON.stringify(reserva)
         };
-        fetch('http://localhost:8000/v1/reservas/'+ reserva.id, requestOptions).then
+        fetch(process.env.REACT_APP_BASE_URL + 'reservas/'+ reserva.id, requestOptions).then
         (response => {window.location.replace("/misReservas")})
     }
 

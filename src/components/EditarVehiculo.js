@@ -79,7 +79,7 @@ function EditarVehiculo () {
                     headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') },
                     body: JSON.stringify(vehiculo)
                 };
-                fetch('http://localhost:8000/v1/vehiculos/' + id , requestOptions).then
+                fetch(process.env.REACT_APP_BASE_URL + 'vehiculos/' + id , requestOptions).then
                 (response => {window.location.replace("/vehiculos/"+id)});
             });
         }else{
@@ -88,7 +88,7 @@ function EditarVehiculo () {
                 headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') },
                 body: JSON.stringify(vehiculo)
             };
-            fetch('http://localhost:8000/v1/vehiculos/'+ id, requestOptions).then
+            fetch(process.env.REACT_APP_BASE_URL + 'vehiculos/'+ id, requestOptions).then
             (response => {window.location.replace("/vehiculos/"+id)});
         }
     }
@@ -98,7 +98,7 @@ function EditarVehiculo () {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') }
         };
-        fetch('http://localhost:8000/v1/vehiculos/'+ id, requestOptions).then
+        fetch(process.env.REACT_APP_BASE_URL + 'vehiculos/'+ id, requestOptions).then
         (response => {window.location.replace("/vehiculos")});
     }
 

@@ -77,7 +77,7 @@ function AnadirVehiculo () {
                     headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') },
                     body: JSON.stringify(vehiculo)
                 };
-                fetch('http://localhost:8000/v1/vehiculos', requestOptions).then
+                fetch(process.env.REACT_APP_BASE_URL+'vehiculos', requestOptions).then
                 (response => {window.location.replace("/vehiculos")});
             }else{
                 const formData = new FormData();
@@ -96,7 +96,7 @@ function AnadirVehiculo () {
                         headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') },
                         body: JSON.stringify(vehiculo)
                     };
-                    fetch('http://localhost:8000/v1/vehiculos', requestOptions).then
+                    fetch(process.env.REACT_APP_BASE_URL +'vehiculos', requestOptions).then
                     (response => {window.location.replace("/vehiculos")});
                 });
             }

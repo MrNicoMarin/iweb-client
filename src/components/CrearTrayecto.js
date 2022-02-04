@@ -107,7 +107,7 @@ function CrearTrayecto () {
                         },
                 body: JSON.stringify(trayecto)
             };
-            fetch('http://localhost:8000/v1/trayectos', requestOptions);
+            fetch(process.env.REACT_APP_BASE_URL + 'trayectos', requestOptions);
     
             window.location.replace('/trayectos');
         }

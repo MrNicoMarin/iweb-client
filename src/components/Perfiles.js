@@ -39,7 +39,7 @@ function Perfiles () {
                     </thead>
                     <tbody>
                     {usuarios.map((usuario) => (
-                        id != usuario.id && 
+                        id != usuario.id && usuario.id != 1 &&  
                             <tr key={usuario.id}>
                                 <td> <Image src={usuario.imagen} referrerPolicy="no-referrer" roundedCircle="true" width="60" height="60" /></td>
                                 <td>{usuario.email}</td>

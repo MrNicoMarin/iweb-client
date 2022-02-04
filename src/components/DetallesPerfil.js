@@ -66,7 +66,7 @@ function DetallesPerfil () {
                 headers: { 'Content-Type': 'application/json','Authorization' : sessionStorage.getItem('token') },
                 body: JSON.stringify({"usuario":{"id":usuario.id},"text":comentario})
             };
-            fetch('http://localhost:8000/v1/comentarios', requestOptions).then
+            fetch(process.env.REACT_APP_BASE_URL+'comentarios', requestOptions).then
             (response => {window.location.replace("/perfiles/"+id)});
         }else{
             setShowModal(true)
@@ -108,7 +108,12 @@ function DetallesPerfil () {
                         {idlogin == usuario.id && (
                             <Button href={'/perfiles/' + id + '/update'}>Editar perfil</Button>
                         )}
-                        </Col>
+                        <br/><br/>
+                        {idlogin == usuario.id && usuario.twitterToken == null && (
+                        <Button href={'https://twitter.com/i/oauth2/authorize?response_type=code&client_id=a20wU2JuTnE3SGlfSmh0NnAtcDQ6MTpjaQ&redirect_uri=' + 'http://localhost:3000/loginTwitter' + '&scope=tweet.write%20tweet.read%20users.read%20follows.read%20offline.access&state=state&code_challenge=challenge&code_challenge_method=plain'}>Vincular con Twitter</Button>)}
+                        {idlogin == usuario.id && usuario.twitterToken != null && (
+                        <Button disabled>Twitter vinculado</Button>)}
+                    </Col>
                     <Col sm={8}>
                         <br/><br/><br/><br/><br/>
                             <Row>
@@ -139,7 +144,7 @@ function DetallesPerfil () {
                                 </Col>
                             </Row>
                             <Row>
-                            <Col></Col>
+                            
                             </Row>
                     </Col>
                 </Row>

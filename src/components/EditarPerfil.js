@@ -75,7 +75,7 @@ function EditarPerfil () {
                     headers: { 'Content-Type': 'application/json' , 'Authorization' : sessionStorage.getItem('token')},
                     body: JSON.stringify(usuario)
                 };
-                fetch('http://localhost:8000/v1/usuarios/'+id, requestOptions).then
+                fetch(process.env.REACT_APP_BASE_URL + 'usuarios/'+id, requestOptions).then
                 (response => {window.location.replace("/perfiles/"+id)})
             });
         }else{
@@ -84,7 +84,7 @@ function EditarPerfil () {
                 headers: { 'Content-Type': 'application/json' , 'Authorization' : sessionStorage.getItem('token')},
                 body: JSON.stringify(usuario)
             };
-            fetch('http://localhost:8000/v1/usuarios/'+id, requestOptions).then
+            fetch(process.env.REACT_APP_BASE_URL + 'usuarios/'+id, requestOptions).then
             (response => {window.location.replace("/perfiles/"+id)})
         }
         
