@@ -14,7 +14,7 @@ function EditarPerfil () {
     const [fileUrl, setFileUrl] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [error, setError] = useState(false);
-    const [imagenCambiada, setimagenCambiada] = useState(true);
+    const [imagenCambiada, setimagenCambiada] = useState(false);
     let { id } = useParams();
 
     useEffect(() => { 
