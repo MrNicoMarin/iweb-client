@@ -13,7 +13,7 @@ function LoginTwitter(){
             body : JSON.stringify({'token' : searchParams.get('code')})
         };
         fetch(process.env.REACT_APP_BASE_URL+"oauth/twitter", requestOptions).then
-        (response => response.json()).then(window.location.replace('/perfiles/' + sessionStorage.getItem('id')))
+        (response => response.json()).then(window.location.replace('/'))
     }, []);
 
     return(
