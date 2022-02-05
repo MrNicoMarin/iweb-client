@@ -109,9 +109,9 @@ function DetallesPerfil () {
                             <Button href={'/perfiles/' + id + '/update'}>Editar perfil</Button>
                         )}
                         <br/><br/>
-                        {idlogin == usuario.id && usuario.twitterToken == null && (
+                        {idlogin == usuario.id && usuario.twitterToken == false && (
                         <Button href={'https://twitter.com/i/oauth2/authorize?response_type=code&client_id=a20wU2JuTnE3SGlfSmh0NnAtcDQ6MTpjaQ&redirect_uri=' + 'https://zoomcar-iweb.herokuapp.com/loginTwitter' + '&scope=tweet.write%20tweet.read%20users.read%20follows.read%20offline.access&state=state&code_challenge=challenge&code_challenge_method=plain'}>Vincular con Twitter</Button>)}
-                        {idlogin == usuario.id && usuario.twitterToken != null && (
+                        {idlogin == usuario.id && usuario.twitterToken == true && (
                         <Button disabled>Twitter vinculado</Button>)}
                     </Col>
                     <Col sm={8}>
